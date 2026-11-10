@@ -55,6 +55,7 @@
   .btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 12px; padding: 10px 16px; font-size: 17px; font-weight: 600; background: var(--accent); color: #fff; cursor: pointer; }
   .btn.plain { background: var(--fill); color: var(--accent); }
   .btn.ok { background: var(--green); }
+  #copy { flex: 1.7; white-space: nowrap; }
   /* Netlify adds a "Powered by Netlify" badge to every page on the free plan; keep it hidden */
   #nl-badge-frame { display: none !important; }
 </style>
@@ -85,7 +86,7 @@
     <div class="url" id="url"></div>
     <div class="actions">
       <button class="btn plain" type="button" id="reset">Clear</button>
-      <button class="btn" type="button" id="copy">Copy link</button>
+      <button class="btn" type="button" id="copy"></button>
     </div>
   </div>
 
@@ -129,8 +130,13 @@ function update() {
   const date = fD.value ? new Date(fD.value + 'T12:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }) : '';
   const parts = [fS.value && SURGEONS[fS.value].name, fP.value ? PROCEDURES[fP.value].label : fA.value && AREAS[fA.value].label + ' surgery', fSt.value && STUDIES[fSt.value].label, date].filter(Boolean);
   $('sum').textContent = parts.length ? parts.join(' · ') : 'No details yet. The patient will be asked to add them.';
-  const c = $('copy'); c.textContent = 'Copy link'; c.classList.remove('ok');
+  const c = $('copy'); c.innerHTML = CAN_SHARE ? SHARE_ICON + 'Share via AirDrop' : 'Copy link'; c.classList.remove('ok');
 }
+
+// iPhones (and most phones) open the share sheet, which includes AirDrop, Messages and Mail.
+// Browsers without it fall back to copying the link.
+const CAN_SHARE = !!navigator.share;
+const SHARE_ICON = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9.88 14.12A3 3 0 1 1 14.12 14.12"/><path d="M7.4 16.6A6.5 6.5 0 1 1 16.6 16.6"/><path d="M4.93 19.07A10 10 0 1 1 19.07 19.07"/></svg>';
 
 fA.addEventListener('input', () => { fillAreaLists(); update(); });
 fP.addEventListener('input', () => { if (fP.value && !fA.value) { fA.value = PROCEDURES[fP.value].area; fillAreaLists(); } update(); });
@@ -138,6 +144,11 @@ fP.addEventListener('input', () => { if (fP.value && !fA.value) { fA.value = PRO
 fD.addEventListener('change', update);
 
 $('copy').addEventListener('click', async e => {
+  if (CAN_SHARE) {
+    try { await navigator.share({ title: 'Your surgery guide', url: link() }); }
+    catch (err) { if (err.name !== 'AbortError') prompt('Copy this link:', link()); }
+    return;
+  }
   try { await navigator.clipboard.writeText(link()); e.currentTarget.textContent = 'Copied'; e.currentTarget.classList.add('ok'); }
   catch { prompt('Copy this link:', link()); }
 });
