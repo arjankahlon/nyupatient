@@ -1,0 +1,998 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f2f2f7">
+<meta name="color-scheme" content="light only">
+<meta name="format-detection" content="telephone=no">
+<meta name="robots" content="noindex">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Surgery Guide">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-512.png">
+<title>Your Surgery Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f2f2f7;
+    --card: #ffffff;
+    --sep: rgba(60, 60, 67, .16);
+    --label: #000000;
+    --label-2: rgba(60, 60, 67, .62);
+    --label-3: rgba(60, 60, 67, .35);
+    --fill: rgba(118, 118, 128, .12);
+    --accent: #57068c;
+    --accent-tint: #f2e9f9;
+    --red: #e5332a;
+    --red-tint: #fdeceb;
+    --green: #30a14e;
+    --orange: #f08c00;
+    --blue: #2a7de1;
+    --teal: #1f9fb5;
+    --indigo: #5856d6;
+    --pink: #e0325f;
+    --gray: #8e8e93;
+    --radius: 14px;
+    --font: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, "Segoe UI", Roboto, sans-serif;
+    --rounded: ui-rounded, "SF Pro Rounded", -apple-system, BlinkMacSystemFont, Inter, sans-serif;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--bg); color: var(--label); font: 17px/1.42 var(--font); letter-spacing: -.01em; }
+  a { color: var(--accent); text-decoration: none; }
+  button { font: inherit; letter-spacing: inherit; }
+  .wrap { max-width: 640px; margin: 0 auto; padding: 0 16px; }
+
+  /* ---------- Header (sticky, translucent like an iOS nav bar) ---------- */
+  .topbar {
+    position: sticky; top: 0; z-index: 20;
+    background: rgba(242, 242, 247, .82);
+    -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px);
+    border-bottom: .5px solid var(--sep);
+    padding-top: env(safe-area-inset-top);
+  }
+  .topbar .wrap { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 60px; padding-top: 8px; padding-bottom: 8px; }
+  .logo { height: 34px; width: auto; display: block; flex: none; }
+  .top-right { text-align: right; line-height: 1.2; min-width: 0; }
+  .tr-title { font-size: 15px; font-weight: 600; letter-spacing: -.01em; }
+  .tr-date { font-size: 13px; color: var(--label-2); margin-top: 2px; }
+
+  /* Full-width surgery details button */
+  .surgery-btn {
+    width: 100%; display: flex; align-items: center; gap: 12px; margin-top: 16px;
+    background: var(--card); border: 0; border-radius: var(--radius); padding: 12px 16px; text-align: left; cursor: pointer; color: var(--label);
+  }
+  .sb-main { flex: 1; min-width: 0; }
+  .sb-k { font-size: 13px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: .04em; }
+  .sb-t { font-size: 18px; font-weight: 600; line-height: 1.25; }
+  .sb-s { font-size: 15px; color: var(--label-2); }
+  .sb-edit { font-size: 16px; font-weight: 600; color: var(--accent); display: flex; align-items: center; gap: 6px; }
+  .sb-edit .chev { width: 8px; height: 8px; border-right: 2px solid var(--label-3); border-bottom: 2px solid var(--label-3); transform: rotate(-45deg); }
+
+  /* Care-team note */
+  .note { display: flex; gap: 10px; align-items: flex-start; background: var(--accent-tint); border-radius: var(--radius); padding: 12px 14px; margin: 0 0 12px; font-size: 15px; font-weight: 600; color: var(--accent); }
+  .note svg { width: 20px; height: 20px; flex: none; margin-top: 1px; }
+
+  /* ---------- Hero ---------- */
+  .hero { margin: 12px 0 12px; background: var(--card); border-radius: 20px; padding: 22px 20px 18px; text-align: center; }
+  .hero-kicker { font-size: 15px; font-weight: 600; color: var(--label-2); }
+  .hero-num { font-family: var(--rounded); font-size: 76px; font-weight: 700; line-height: 1; color: var(--accent); letter-spacing: -.03em; margin: 4px 0 2px; }
+  .hero-big { font-size: 28px; font-weight: 700; letter-spacing: -.02em; margin: 2px 0; }
+  .hero-label { font-size: 20px; font-weight: 600; }
+  .hero-sub { color: var(--label-2); font-size: 15px; margin-top: 2px; }
+  .hero-next { display: flex; align-items: center; gap: 12px; text-align: left; margin-top: 16px; padding-top: 14px; border-top: .5px solid var(--sep); }
+  .hero-next .k { font-size: 13px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: .04em; }
+  .hero-next .t { font-weight: 600; }
+  .hero-next .s { font-size: 15px; color: var(--label-2); }
+  .hero-alert { display: inline-block; margin-top: 12px; background: var(--accent-tint); color: var(--accent); font-weight: 600; font-size: 15px; padding: 7px 14px; border-radius: 999px; }
+
+  /* ---------- Segmented control ---------- */
+  .seg-wrap { position: sticky; top: var(--top-h, 60px); z-index: 15; padding: 8px 0; margin: 0 -16px 8px; background: rgba(242,242,247,.82); -webkit-backdrop-filter: saturate(180%) blur(20px); backdrop-filter: saturate(180%) blur(20px); }
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--fill); border-radius: 10px; padding: 2px; margin: 0 16px; }
+  .seg button { border: 0; background: transparent; border-radius: 8px; padding: 8px 4px; font-size: 15px; font-weight: 500; color: var(--label); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .seg button[aria-selected="true"] { background: var(--card); font-weight: 600; box-shadow: 0 3px 8px rgba(0,0,0,.12), 0 0 0 .5px rgba(0,0,0,.04); }
+  .seg button .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); display: none; }
+  .seg button.is-now .dot { display: inline-block; }
+
+  /* ---------- Grouped lists ---------- */
+  .sec-title { font-size: 22px; font-weight: 700; letter-spacing: -.02em; margin: 26px 4px 8px; }
+  .sec-note { font-size: 13px; color: var(--label-2); margin: -4px 4px 8px; }
+  .group { background: var(--card); border-radius: var(--radius); overflow: hidden; margin-bottom: 12px; }
+  .group > * { position: relative; }
+  .group > * + *::before { content: ""; position: absolute; top: 0; right: 0; left: 60px; border-top: .5px solid var(--sep); z-index: 1; }
+  .row { display: flex; gap: 12px; padding: 12px 16px; }
+  .row-main { flex: 1; min-width: 0; }
+  .row-title { font-weight: 600; line-height: 1.3; }
+  .row-sub { font-size: 15px; color: var(--label-2); margin-top: 1px; }
+  .row ul, .acc-body ul { margin: 6px 0 0; padding-left: 20px; }
+  .row li, .acc-body li { margin: 3px 0; }
+  .row p, .acc-body p { margin: 6px 0 0; }
+  .row strong { font-weight: 600; }
+
+  /* Icon tiles, like iOS Settings */
+  .tile { width: 32px; height: 32px; border-radius: 8px; flex: none; display: grid; place-items: center; color: #fff; background: var(--accent); }
+  .tile svg { width: 19px; height: 19px; }
+
+  /* Callout card (warnings / key notes) */
+  .callout { border-radius: var(--radius); padding: 14px 16px; margin-bottom: 12px; display: flex; gap: 12px; }
+  .callout.red { background: var(--red-tint); }
+  .callout.red .row-title { color: var(--red); }
+  .callout.purple { background: var(--accent-tint); }
+  .callout ul { margin: 6px 0 0; padding-left: 20px; }
+  .callout li { margin: 3px 0; }
+  .callout p { margin: 8px 0 0; font-size: 15px; }
+
+  /* "Show details" button */
+  details.more { margin-top: 8px; }
+  details.more > summary {
+    list-style: none; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;
+    font-size: 15px; font-weight: 600; color: var(--accent); background: var(--accent-tint);
+    padding: 6px 12px 6px 8px; border-radius: 999px; user-select: none;
+  }
+  details.more > summary::-webkit-details-marker { display: none; }
+  details.more > summary .pm { display: inline-grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 14px; line-height: 1; font-weight: 700; }
+  details.more > summary .pm::before { content: "+"; }
+  details.more[open] > summary .pm::before { content: "−"; }
+  details.more > summary .h { display: none; }
+  details.more[open] > summary .s { display: none; }
+  details.more[open] > summary .h { display: inline; }
+  details.more > .more-body { margin-top: 6px; color: var(--label); }
+  details.more > .more-body ul { margin: 0; padding-left: 20px; list-style: disc; }
+  .callout details.more > summary { background: rgba(255,255,255,.75); }
+
+  /* Collapsible rows (Settings-style disclosure) */
+  details.acc > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 12px; padding: 11px 16px; }
+  details.acc > summary::-webkit-details-marker { display: none; }
+  details.acc > summary .row-title { flex: 1; font-weight: 500; }
+  details.acc > summary .chev { width: 9px; height: 9px; border-right: 2px solid var(--label-3); border-bottom: 2px solid var(--label-3); transform: rotate(-45deg); transition: transform .2s; margin-right: 4px; }
+  details.acc[open] > summary .chev { transform: rotate(45deg); }
+  details.acc > .acc-body { padding: 0 16px 14px 60px; color: var(--label); }
+
+  /* ---------- Checklist steps ---------- */
+  .steps { list-style: none; margin: 0; padding: 0; }
+  .step { display: flex; gap: 14px; padding: 14px 16px; position: relative; }
+  .step + .step::before { content: ""; position: absolute; top: 0; right: 0; left: 72px; border-top: .5px solid var(--sep); }
+  .cal { width: 42px; flex: none; border-radius: 10px; overflow: hidden; text-align: center; background: var(--card); box-shadow: 0 0 0 .5px var(--sep), 0 1px 2px rgba(0,0,0,.06); align-self: flex-start; }
+  .cal .m { display: block; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .04em; padding: 2px 0 1px; }
+  .cal .d { display: block; font-family: var(--rounded); font-size: 20px; font-weight: 700; padding: 2px 0 3px; line-height: 1.15; }
+  .cal.rel .d { font-size: 17px; }
+  .cal.rel .m { font-size: 10px; }
+  .step-when { font-size: 14px; color: var(--label-2); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+  .step-title { font-weight: 600; font-size: 18px; line-height: 1.3; letter-spacing: -.015em; }
+  .badge { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--accent); color: #fff; letter-spacing: .02em; }
+  .step.done .cal { opacity: .45; }
+  .step.done .step-title { color: var(--label-2); text-decoration: line-through; text-decoration-color: var(--label-3); }
+  .step.done .cal .m { background: var(--gray); }
+  .step.surgery .cal { box-shadow: 0 0 0 2px var(--accent); }
+  .stepcheck { flex: none; align-self: flex-start; margin-top: 8px; cursor: pointer; position: relative; padding: 4px; margin-right: -4px; }
+  .stepcheck input { position: absolute; opacity: 0; pointer-events: none; }
+  .stepcheck .box { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--label-3); display: grid; place-items: center; transition: background .15s, border-color .15s; }
+  .stepcheck .box svg { width: 16px; height: 16px; color: #fff; opacity: 0; }
+  .stepcheck input:checked + .box { background: var(--accent); border-color: var(--accent); }
+  .stepcheck input:checked + .box svg { opacity: 1; }
+  .step-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; align-items: flex-start; }
+  .step-actions details.more { margin-top: 0; }
+  .step-actions details.more[open] { flex-basis: 100%; }
+
+  /* Pill buttons (calendar etc.) */
+  .chip { display: inline-flex; align-items: center; gap: 6px; border: 0; cursor: pointer; font-size: 15px; font-weight: 600; color: var(--label-2); background: var(--fill); padding: 6px 12px 6px 10px; border-radius: 999px; }
+  .chip svg { width: 16px; height: 16px; }
+  .chip.added { color: var(--green); background: #e5f4e9; }
+  .chip.accent { color: var(--accent); background: var(--accent-tint); }
+  .sec-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin: 26px 4px 8px; flex-wrap: wrap; }
+  .sec-row .sec-title { margin: 0; }
+
+  /* Action sheet */
+  .sheet h3 { font-size: 20px; font-weight: 700; text-align: center; margin: 14px 0 4px; }
+  .sheet-opt { width: 100%; display: flex; align-items: center; gap: 12px; padding: 13px 16px; border: 0; background: transparent; font-size: 17px; color: var(--label); text-align: left; cursor: pointer; }
+  .sheet-opt .tile { width: 30px; height: 30px; }
+  .sheet-opt .grow { flex: 1; min-width: 0; }
+  .sheet-opt .small { display: block; font-size: 14px; color: var(--label-2); }
+  .sheet .btn.block { width: 100%; margin-top: 4px; }
+  .sheet ul.plainlist { background: var(--card); border-radius: var(--radius); padding: 10px 16px 10px 34px; margin: 0 0 16px; }
+  .addr { color: var(--accent); }
+
+  /* Reminders-style checklist */
+  .check { display: flex; align-items: center; gap: 12px; padding: 12px 16px; cursor: pointer; }
+  .group > .check + .check::before { left: 52px; }
+  .check input { position: absolute; opacity: 0; pointer-events: none; }
+  .check .box { width: 24px; height: 24px; border-radius: 50%; border: 2px solid var(--label-3); flex: none; display: grid; place-items: center; transition: background .15s, border-color .15s; }
+  .check .box svg { width: 14px; height: 14px; color: #fff; opacity: 0; }
+  .check input:checked + .box { background: var(--accent); border-color: var(--accent); }
+  .check input:checked + .box svg { opacity: 1; }
+  .check input:checked ~ .lbl { color: var(--label-2); }
+  .check input:focus-visible + .box { outline: 3px solid var(--accent-tint); outline-offset: 2px; }
+
+  /* Contacts */
+  .contact .row-sub { font-size: 14px; }
+  .call { flex: none; align-self: center; display: inline-flex; align-items: center; gap: 6px; background: var(--accent-tint); color: var(--accent); font-weight: 600; font-size: 15px; border-radius: 999px; padding: 8px 14px; white-space: nowrap; }
+  .call svg { width: 16px; height: 16px; }
+
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 12px; padding: 12px 18px; font-size: 17px; font-weight: 600; background: var(--accent); color: #fff; cursor: pointer; }
+  .btn.plain { background: var(--fill); color: var(--accent); }
+
+  footer { color: var(--label-2); font-size: 13px; padding: 20px 4px calc(env(safe-area-inset-bottom) + 40px); }
+
+  /* ---------- Setup sheet ---------- */
+  dialog { border: 0; padding: 0; background: var(--bg); border-radius: 16px; width: min(440px, calc(100vw - 32px)); box-shadow: 0 24px 70px rgba(0,0,0,.3); }
+  dialog::backdrop { background: rgba(0, 0, 0, .35); }
+  .sheet { padding: 8px 16px 18px; }
+  .grabber { width: 36px; height: 5px; border-radius: 3px; background: var(--label-3); margin: 0 auto 10px; display: none; }
+  .sheet-logo { height: 30px; display: block; margin: 12px auto 12px; }
+  .sheet h2 { font-size: 26px; font-weight: 700; letter-spacing: -.02em; margin: 0 0 4px; text-align: center; }
+  .sheet .lead { color: var(--label-2); margin: 0 4px 18px; font-size: 15px; text-align: center; }
+  .form-row { display: flex; align-items: center; gap: 12px; padding: 0 16px; min-height: 50px; }
+  .group > .form-row + .form-row::before { left: 16px; }
+  .form-row label { flex: none; width: 82px; font-weight: 500; }
+  .form-row select, .form-row input { flex: 1; min-width: 0; border: 0; background: transparent; font: inherit; font-size: 17px; color: var(--accent); text-align: right; text-align-last: right; padding: 12px 0; -webkit-appearance: none; appearance: none; cursor: pointer; }
+  .form-row input[type="date"] { min-height: 46px; }
+  .form-row input::-webkit-date-and-time-value { text-align: right; }
+  .group-foot { font-size: 13px; color: var(--label-2); margin: -4px 16px 18px; display: flex; gap: 6px; }
+  .group-foot svg { width: 14px; height: 14px; flex: none; margin-top: 2px; }
+  .sheet-actions { display: flex; gap: 10px; }
+  .sheet-actions .btn { flex: 1; }
+  .staff { margin-top: 16px; font-size: 13px; text-align: center; }
+  .staff summary { color: var(--label-2); cursor: pointer; list-style: none; }
+  .staff summary::-webkit-details-marker { display: none; }
+  .staff input { width: 100%; font: 13px ui-monospace, Menlo, monospace; padding: 10px; border: 0; border-radius: 10px; margin-top: 8px; background: var(--card); }
+
+  @media (max-width: 560px) {
+    dialog { width: 100%; max-width: 100%; margin: auto 0 0; border-radius: 16px 16px 0 0; padding-bottom: env(safe-area-inset-bottom); }
+    .grabber { display: block; }
+    .sheet { padding-top: 6px; }
+    .logo { height: 30px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap">
+    <img class="logo" src="logo.png" alt="NYU Langone Orthopedics">
+    <div class="top-right">
+      <div class="tr-title">Perioperative Patient Information</div>
+      <div class="tr-date" id="todayLbl"></div>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <button class="surgery-btn" id="detailsBtn" type="button" aria-label="Edit your surgery details">
+    <span class="tile" style="background:var(--accent)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></span>
+    <span class="sb-main"><span class="sb-k">Your surgery</span><span class="sb-t" id="sbT" style="display:block"></span><span class="sb-s" id="sbS" style="display:block"></span></span>
+    <span class="sb-edit">Edit<span class="chev"></span></span>
+  </button>
+  <section class="hero" id="hero"></section>
+  <div class="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg><span>If anything here differs from what your care team tells you, follow your care team’s instructions.</span></div>
+  <div class="seg-wrap">
+    <nav class="seg" role="tablist" id="phases">
+      <button role="tab" data-phase="pre"><span class="dot"></span>Before</button>
+      <button role="tab" data-phase="day"><span class="dot"></span>Surgery Day</button>
+      <button role="tab" data-phase="post"><span class="dot"></span>Recovery</button>
+    </nav>
+  </div>
+  <main id="content"></main>
+  <section id="contacts"></section>
+  <footer>
+    This guide summarizes general instructions from your surgeon’s office. <strong>If anything here differs from what your care team tells you, follow your care team’s instructions.</strong> In an emergency, call 911.<br><br>
+    We don’t collect your name or medical information. Your surgery details are saved only on this device.
+  </footer>
+</div>
+
+<dialog id="setup">
+  <form method="dialog" class="sheet" id="setupForm">
+    <div class="grabber"></div>
+    <img class="sheet-logo" src="logo.png" alt="">
+    <h2 id="sheetTitle">Welcome</h2>
+    <p class="lead">Add your surgery details to see the right instructions at the right time. All optional.</p>
+    <div class="group">
+      <div class="form-row"><label for="fSurgeon">Surgeon</label><select id="fSurgeon"></select></div>
+      <div class="form-row"><label for="fProc">Surgery</label><select id="fProc"></select></div>
+      <div class="form-row"><label for="fDate">Date</label><input type="date" id="fDate"></div>
+    </div>
+    <div class="group-foot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>We never ask for your name. These details stay on this device.</span></div>
+    <div class="sheet-actions">
+      <button class="btn plain" value="cancel" id="cancelBtn" type="submit">Skip</button>
+      <button class="btn" value="save" type="submit">Save</button>
+    </div>
+    <details class="staff">
+      <summary>For clinic staff: link with these details</summary>
+      <input id="shareUrl" readonly>
+    </details>
+  </form>
+</dialog>
+
+<dialog id="action"><div class="sheet" id="actionBody"></div></dialog>
+
+<script>
+/* ============================================================
+   CONTENT
+   Everything patient-facing lives here so surgeons/procedures
+   can be added or swapped without touching the logic below.
+   URL params: ?s=<surgeon>&p=<procedure>&d=YYYY-MM-DD
+   Testing only: &today=MM-DD-YYYY pretends today is that date.
+   ============================================================ */
+
+const SURGEONS = {
+  lomas: {
+    name: 'Dr. Lomas',
+    website: 'https://lomasortho.com',
+    opDays: 'Tuesdays and Fridays',
+    contacts: [
+      { name: 'Surgical scheduling', who: 'Anetam Kaur', role: 'Insurance, forms, and urgent questions', phone: '646-460-8723' },
+      { name: 'Office', who: 'Lorenzo Hayes', role: 'NYU Langone Orthopedic Center', phone: '646-501-7223' },
+    ],
+    sites: [
+      { name: 'NYU Langone Orthopedic Hospital', addr: '301 E 17th St' },
+      { name: 'Essex Crossing Surgical Center', addr: '171 Delancey St' },
+      { name: '38th Street Surgical Center', addr: '339 E 38th St' },
+    ],
+  },
+};
+const URGENT_CARE = { name: 'Samuel’s Immediate Care (orthopedic urgent care)', addr: '301 E 17th St', hours: 'Open daily, 8 AM to 10 PM' };
+
+// Tappable address: Apple Maps on Apple devices, Google Maps elsewhere.
+function mapLink(addr) {
+  const q = encodeURIComponent(addr + ', New York, NY');
+  const href = /iPhone|iPad|Macintosh/.test(navigator.userAgent) ? 'https://maps.apple.com/?q=' + q : 'https://www.google.com/maps/search/?api=1&query=' + q;
+  return `<a class="addr" href="${href}" target="_blank" rel="noopener">${addr}</a>`;
+}
+
+// kind: 'scope' (arthroscopy) or 'open'; unknown procedure shows both versions.
+const PROCEDURES = {
+  scope: { label: 'Elbow arthroscopy', kind: 'scope' },
+  dbr:   { label: 'Distal biceps repair', kind: 'open' },
+  ucl:   { label: 'UCL repair', kind: 'open' },
+  unt:   { label: 'Ulnar nerve transposition', kind: 'open' },
+  epi:   { label: 'Epicondylectomy', kind: 'open' },
+  open:  { label: 'Other open elbow surgery', kind: 'open' },
+};
+
+/* Simple line icons (24px grid) */
+const ICONS = {
+  pill: '<path d="M10.5 20.5 3.5 13.5a5 5 0 0 1 7-7l7 7a5 5 0 0 1-7 7Z"/><path d="m8.5 8.5 7 7"/>',
+  doc: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h6"/>',
+  phone: '<path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/>',
+  clip: '<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/>',
+  moon: '<path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/>',
+  drop: '<path d="M12 2.7 6.3 8.4a8 8 0 1 0 11.4 0Z"/>',
+  users: '<circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2"/><path d="M16 3.1a4 4 0 0 1 0 7.8M21 21v-2a4 4 0 0 0-3-3.9"/>',
+  clock: '<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>',
+  bed: '<path d="M2 4v16M2 8h18a2 2 0 0 1 2 2v10M2 17h20M6 8v9"/>',
+  alert: '<path d="m21.7 18-8-14a2 2 0 0 0-3.4 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.7-3Z"/><path d="M12 9v4M12 17h.01"/>',
+  sling: '<path d="M7 3v8a5 5 0 0 0 10 0V3"/><path d="M12 16v5M5 21h14"/>',
+  snow: '<path d="M12 2v20M2 12h20M4.9 4.9l14.2 14.2M19.1 4.9 4.9 19.1"/>',
+  activity: '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
+  car: '<path d="M5 17H3v-5l2-5h14l2 5v5h-2"/><circle cx="7.5" cy="17" r="2"/><circle cx="16.5" cy="17" r="2"/><path d="M9.5 17h5"/>',
+  leaf: '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.5 19 2c1 2 2 4.2 2 8 0 5.5-4.8 10-10 10Z"/><path d="M2 21c0-3 1.9-5.4 5.1-6"/>',
+  nosmoke: '<circle cx="12" cy="12" r="9"/><path d="m5.6 5.6 12.8 12.8"/>',
+  play: '<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/>',
+  pin: '<path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/>',
+  chat: '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>',
+  hospital: '<rect x="4" y="3" width="16" height="18" rx="2"/><path d="M12 7v6M9 10h6M9 21v-4h6v4"/>',
+  check: '<path d="M20 6 9 17l-5-5"/>',
+  cal: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M12 14v4M10 16h4"/>',
+  apple: '<rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/>',
+  google: '<circle cx="12" cy="12" r="9"/><path d="M16.5 12H12M16.5 12a4.5 4.5 0 1 1-1.3-3.2"/>',
+};
+const svg = (name, sw = 2) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${sw}" stroke-linecap="round" stroke-linejoin="round">${ICONS[name]}</svg>`;
+
+/* ============================================================
+   STATE
+   ============================================================ */
+const KEY = 'periop.v1';
+const CHECK_KEY = 'periop.checks.v1';
+const store = {
+  get(k, fallback) { try { return JSON.parse(localStorage.getItem(k)) ?? fallback; } catch { return fallback; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} },
+};
+
+const qs = new URLSearchParams(location.search);
+let settings = store.get(KEY, { s: '', p: '', d: '', setup: false });
+let fromUrl = false;
+for (const k of ['s', 'p', 'd']) {
+  if (qs.has(k)) { settings[k] = qs.get(k); fromUrl = true; }
+}
+sanitize();
+// Testing: ?today=MM-DD-YYYY pretends today is that date.
+const testTodayRaw = qs.get('today') || '';
+const testToday = (m => m ? `${m[3]}-${m[1].padStart(2, '0')}-${m[2].padStart(2, '0')}` : null)(testTodayRaw.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/));
+if (fromUrl) {
+  store.set(KEY, settings);
+  // Drop the details from the address bar once saved (keep the testing param if present).
+  const keep = testToday ? '?today=' + testTodayRaw : '';
+  history.replaceState(null, '', location.pathname + keep);
+}
+
+function sanitize() {
+  if (!SURGEONS[settings.s]) settings.s = '';
+  if (!PROCEDURES[settings.p]) settings.p = '';
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(settings.d || '') || isNaN(parseDate(settings.d))) settings.d = '';
+}
+
+/* ============================================================
+   DATES (local calendar dates only)
+   ============================================================ */
+function parseDate(s) { const [y, m, d] = s.split('-').map(Number); return new Date(y, m - 1, d); }
+function addDays(dt, n) { const x = new Date(dt); x.setDate(x.getDate() + n); return x; }
+function diffDays(a, b) { return Math.round((Date.UTC(a.getFullYear(), a.getMonth(), a.getDate()) - Date.UTC(b.getFullYear(), b.getMonth(), b.getDate())) / 864e5); }
+function subBusinessDays(dt, n) { let x = new Date(dt); while (n > 0) { x = addDays(x, -1); if (x.getDay() !== 0 && x.getDay() !== 6) n--; } return x; }
+const fmtLong = dt => dt.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+const fmtShort = dt => dt.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+const monAbbr = dt => dt.toLocaleDateString('en-US', { month: 'short' }).toUpperCase();
+const today = () => testToday ? parseDate(testToday) : (n => new Date(n.getFullYear(), n.getMonth(), n.getDate()))(new Date());
+
+function context() {
+  const surgery = settings.d ? parseDate(settings.d) : null;
+  const days = surgery ? diffDays(surgery, today()) : null; // >0 before, 0 day of, <0 after
+  let phase = null;
+  if (days !== null) phase = days >= 2 ? 'pre' : days >= 0 ? 'day' : 'post';
+  const surgeon = SURGEONS[settings.s] || SURGEONS.lomas; // only one team for now
+  const proc = PROCEDURES[settings.p] || null;
+  return { surgery, days, phase, surgeon, proc, kind: proc ? proc.kind : null };
+}
+
+/* ============================================================
+   RENDER HELPERS
+   ============================================================ */
+const ul = items => '<ul>' + items.filter(Boolean).map(i => `<li>${i}</li>`).join('') + '</ul>';
+const tile = (icon, color = 'var(--accent)') => `<span class="tile" style="background:${color}">${svg(icon)}</span>`;
+
+// "+ Show details" button; label can be customized.
+const more = (html, label = 'Show details', hide = 'Hide details') =>
+  `<details class="more"><summary><span class="pm"></span><span class="s">${label}</span><span class="h">${hide}</span></summary><div class="more-body">${html}</div></details>`;
+
+// A row inside a grouped list: icon tile + title + optional content.
+const row = (icon, color, title, body = '') =>
+  `<div class="row">${tile(icon, color)}<div class="row-main"><div class="row-title">${title}</div>${body}</div></div>`;
+
+// A collapsed row that opens to show its text.
+const acc = (icon, color, title, body) =>
+  `<details class="acc"><summary>${tile(icon, color)}<span class="row-title">${title}</span><span class="chev"></span></summary><div class="acc-body">${body}</div></details>`;
+
+const group = inner => `<div class="group">${inner}</div>`;
+const title = (t, note = '') => `<h2 class="sec-title">${t}</h2>${note ? `<p class="sec-note">${note}</p>` : ''}`;
+
+// Shows procedure-specific text; if the procedure is unknown, shows both labeled.
+function byKind(c, scope, open) {
+  if (c.kind === 'scope') return scope;
+  if (c.kind === 'open') return open;
+  return `<p><strong>Elbow arthroscopy:</strong></p>${scope}<p><strong>Open surgery (biceps, UCL, nerve):</strong></p>${open}`;
+}
+
+function checklist(id, items) {
+  const done = store.get(CHECK_KEY, {});
+  return items.map((t, i) => {
+    const k = id + ':' + i;
+    return `<label class="check"><input type="checkbox" data-k="${k}" ${done[k] ? 'checked' : ''}><span class="box">${svg('check', 3)}</span><span class="lbl">${t}</span></label>`;
+  }).join('');
+}
+
+const stepDate = (c, it) => it.at || addDays(c.surgery, it.off);
+const stepEnd = (c, it) => it.until != null ? addDays(c.surgery, it.until) : stepDate(c, it);
+const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
+
+// "8 days before" for before-surgery steps; recovery steps use their own label.
+function relLabel(c, it, phase) {
+  if (it.surgery) return 'Surgery day';
+  if (phase === 'post' || !c.surgery) return it.rel;
+  const a = diffDays(c.surgery, stepDate(c, it)), b = diffDays(c.surgery, stepEnd(c, it));
+  return a === b ? `${plural(a, 'day')} before` : `${b} to ${a} days before`;
+}
+
+// First step not checked off and not yet over.
+function nextStep(c, items) {
+  if (!c.surgery) return null;
+  const done = store.get(CHECK_KEY, {});
+  return items.find(it => !done['step:' + it.id] && diffDays(stepEnd(c, it), today()) >= 0) || null;
+}
+
+function steps(c, items, phase) {
+  const t = today(), done = store.get(CHECK_KEY, {});
+  const nxt = nextStep(c, items);
+  return '<ol class="steps">' + items.map(it => {
+    const k = 'step:' + it.id, isDone = !!done[k];
+    let badge = '', calBadge, when;
+    if (c.surgery) {
+      const at = stepDate(c, it), end = stepEnd(c, it);
+      if (it === nxt) badge = diffDays(at, t) <= 0 ? '<span class="badge">Today</span>' : '<span class="badge">Next</span>';
+      calBadge = `<div class="cal"><span class="m">${monAbbr(at)}</span><span class="d">${at.getDate()}</span></div>`;
+      const dates = it.until != null ? `${fmtShort(at)} to ${fmtShort(end)}` : fmtShort(at);
+      when = `${dates} · ${relLabel(c, it, phase)}`;
+    } else {
+      calBadge = `<div class="cal rel"><span class="m">${it.calM}</span><span class="d">${it.calD}</span></div>`;
+      when = relLabel(c, it, phase);
+    }
+    const calBtn = c.surgery && !it.noCal && IS_MOBILE ? `<button type="button" class="chip" data-cal-add="${it.id}">${svg('cal')}Add to calendar</button>` : '';
+    const actions = (it.body ? more(it.body) : '') + calBtn;
+    return `<li class="step${isDone ? ' done' : ''}${it.surgery ? ' surgery' : ''}">${calBadge}<div class="row-main">
+        <div class="step-when">${when}${badge}</div>
+        <div class="step-title">${it.title}</div>
+        ${actions ? `<div class="step-actions">${actions}</div>` : ''}
+      </div><label class="stepcheck" title="Mark as done"><input type="checkbox" data-k="${k}" aria-label="Mark “${it.title.replace(/<[^>]+>/g, '')}” as done" ${isDone ? 'checked' : ''}><span class="box">${svg('check', 3)}</span></label></li>`;
+  }).join('') + '</ol>';
+}
+
+// Calendar buttons only show on phones and tablets (iPadOS reports itself as a Mac with touch).
+const IS_MOBILE = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1);
+
+// "Add all to calendar" button for a list.
+function calAllBtn(c, phase) {
+  if (!c.surgery || !IS_MOBILE) return '';
+  return `<button type="button" class="chip accent" data-cal-all="${phase}">${svg('cal')}Add all to calendar</button>`;
+}
+
+/* ============================================================
+   STEPS (the dated checklists)
+   id = stable key (checkmarks, calendar). calM/calD = calendar
+   badge when there's no date. calTitle = calendar event name.
+   ============================================================ */
+function preSteps(c) {
+  const items = [
+    { id: 'glp1', off: -8, calM: 'DAYS', calD: '8', rel: '8 days before', title: 'Stop GLP-1 medicine, if you take one', body: ul([
+      'Tell us the date of your last dose.',
+      'If you don’t stop, your surgery may be canceled.',
+      'GLP-1 medicines include Ozempic, Wegovy, Mounjaro, Zepbound and Rybelsus.',
+    ]) },
+    { id: 'vit', off: -7, calM: 'DAYS', calD: '7', rel: '7 days before', title: 'Start vitamins D and C (daily)',
+      calTitle: 'Take vitamins D and C', rrule: c => `FREQ=DAILY;UNTIL=${ymdC(addDays(c.surgery, 42))}`, body: ul([
+      'Vitamin D: 2,000 IU every day',
+      'Vitamin C: 1,000 mg every day',
+      'Keep taking them until 6 weeks after surgery.',
+      'Using the XR recovery program? Start it today too (it runs until 2 weeks after surgery).',
+    ]) },
+    { id: 'nsaid', off: -5, calM: 'DAYS', calD: '5', rel: '5 days before', title: 'Stop pain relievers, aspirin and supplements', body: ul([
+      'Stop Advil, Motrin, ibuprofen, Aleve and naproxen.',
+      'Stop aspirin.',
+      'Stop herbal supplements and other vitamins. Keep taking vitamins D and C.',
+      'Tylenol is OK until the day before surgery.',
+      'On a blood thinner? Follow your doctor’s plan and tell us.',
+    ]) },
+    { id: 'pa', at: c.surgery ? subBusinessDays(c.surgery, 3) : null, off: -3, calM: 'DAYS', calD: '3', rel: '3 business days before', title: 'Video visit with our PA', body: ul([
+      'On MyChart, about 3 business days before surgery.',
+      'It’s booked when your surgery is scheduled. Check MyChart for the time.',
+      'Usually a Tuesday or Friday morning. The time may change.',
+      'We’ll go over what to expect before and after surgery and answer your questions.',
+    ]) },
+    { id: 'shave', off: -3, calM: 'DAYS', calD: '3', rel: '3 days before', title: 'Stop shaving', body: ul([
+      'Don’t shave anywhere on your body until after surgery.',
+    ]) },
+    { id: 'rx', off: -2, until: -1, calM: 'DAYS', calD: '1-2', rel: '1 to 2 days before', title: 'Pick up your prescriptions', body: ul([
+      'We send them to your pharmacy.',
+      'A MyChart message explains each one.',
+      '<strong>Don’t start them until the day after surgery.</strong>',
+    ]) },
+    { id: 'nurse', off: -1, calM: 'DAY', calD: '1', rel: '1 day before', title: 'A nurse calls with your arrival time', body: ul([
+      '<strong>Nothing to eat or drink after midnight.</strong>',
+      'Arrival times aren’t available before this call.',
+    ]) },
+    { id: 'surgery', off: 0, calM: 'DAY', calD: '0', rel: 'Surgery day', title: 'Surgery', surgery: true,
+      calTitle: `${c.proc ? c.proc.label : 'Elbow surgery'} with ${c.surgeon.name}`, body: ul([
+      'Bring your photo ID and insurance card.',
+      'An adult must take you home.',
+    ]) },
+  ];
+  if (c.surgery) items.sort((a, b) => stepDate(c, a) - stepDate(c, b));
+  return items;
+}
+
+function postSteps(c) {
+  return [
+    { id: 'home', off: 0, calM: 'DAY', calD: '0', rel: 'Surgery day', title: 'Home the same day', surgery: true, noCal: true, body: ul([
+      'Rest and keep the sling on.',
+      'Your arm will be numb for 1 to 3 days.',
+    ]) },
+    { id: 'rxstart', off: 1, calM: 'DAY', calD: '1', rel: 'Day 1', title: 'Start your prescriptions', body: ul([
+      'Take them with food.',
+      'Follow the MyChart message for how to take them.',
+    ]) },
+    { id: 'shower', off: 2, calM: 'DAY', calD: '2', rel: 'Day 2', title: 'You may shower', body: byKind(c,
+      ul(['No baths.', 'You may take off the bandage.']),
+      ul(['No baths.', 'Keep the splint on and dry.'])) },
+    { id: 'checkup', off: 10, until: 14, calM: 'DAYS', calD: '10+', rel: 'Days 10 to 14', title: 'First check-up', body: ul([
+      'We remove your stitches' + (c.kind === 'scope' ? '.' : ' and splint.'),
+      'You’ll start physical therapy.',
+      'Call to schedule if you haven’t yet.',
+    ]) },
+    { id: 'vitstop', off: 42, calM: 'WEEKS', calD: '6', rel: '6 weeks', title: 'Stop vitamins D and C' },
+  ];
+}
+
+/* ============================================================
+   CALENDAR
+   Apple: the reminders are packed into a link to /api/ics, which
+   sends them back as a calendar feed. On iPhone that opens the
+   built-in "Add to Calendar" screen instead of downloading a file.
+   (If /api/ics isn't available, falls back to a file download.)
+   Google: "add event" links, one per event (Google has no
+   link for adding several at once).
+   ============================================================ */
+const ymdC = dt => `${dt.getFullYear()}${String(dt.getMonth() + 1).padStart(2, '0')}${String(dt.getDate()).padStart(2, '0')}`;
+const findStep = (c, id) => [...preSteps(c), ...postSteps(c)].find(it => it.id === id);
+const stepPhase = id => ['rxstart', 'shower', 'checkup', 'vitstop', 'home'].includes(id) ? 'post' : 'pre';
+function htmlToText(html) {
+  const d = document.createElement('div');
+  d.innerHTML = html.replace(/<li>/g, '\n• ').replace(/<\/p>/g, '\n');
+  return d.textContent.trim();
+}
+function calEvent(c, id) {
+  const it = findStep(c, id);
+  const title = it.calTitle || (stepPhase(id) === 'post' ? 'Recovery: ' : 'Surgery prep: ') + it.title;
+  return {
+    id, title,
+    uid: `${id}-${settings.d}@nyu-surgery-guide`,
+    start: stepDate(c, it),
+    end: addDays(stepEnd(c, it), 1),
+    desc: (it.body ? htmlToText(it.body) + '\n\n' : '') + 'Your surgery guide: ' + location.origin + location.pathname,
+    rrule: it.rrule ? it.rrule(c) : null,
+  };
+}
+const icsEsc = s => s.replace(/\\/g, '\\\\').replace(/\n/g, '\\n').replace(/,/g, '\\,').replace(/;/g, '\\;');
+const fold = l => { const out = []; while (l.length > 73) { out.push(l.slice(0, 73)); l = ' ' + l.slice(73); } out.push(l); return out.join('\r\n'); };
+function buildICS(evs) {
+  const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
+  const L = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//NYU Langone Orthopedics//Surgery Guide//EN', 'CALSCALE:GREGORIAN', 'METHOD:PUBLISH'];
+  for (const e of evs) {
+    L.push('BEGIN:VEVENT', `UID:${e.uid}`, `DTSTAMP:${stamp}`, `DTSTART;VALUE=DATE:${ymdC(e.start)}`, `DTEND;VALUE=DATE:${ymdC(e.end)}`,
+      `SUMMARY:${icsEsc(e.title)}`, `DESCRIPTION:${icsEsc(e.desc)}`);
+    if (e.rrule) L.push('RRULE:' + e.rrule);
+    L.push('BEGIN:VALARM', 'ACTION:DISPLAY', `DESCRIPTION:${icsEsc(e.title)}`, 'TRIGGER:PT9H', 'END:VALARM', 'END:VEVENT'); // 9 AM reminder
+  }
+  L.push('END:VCALENDAR');
+  return L.map(fold).join('\r\n');
+}
+const b64url = str => btoa(unescape(encodeURIComponent(str))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+const icsUrl = evs => 'api/ics?c=' + b64url(buildICS(evs));
+async function openAppleCalendar(evs) {
+  const url = icsUrl(evs);
+  try {
+    const r = await fetch(url, { method: 'HEAD', cache: 'no-store' });
+    if (r.ok && (r.headers.get('content-type') || '').includes('text/calendar')) { location.href = url; return; }
+  } catch {}
+  // Fallback: plain file download.
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([buildICS(evs)], { type: 'text/calendar;charset=utf-8' }));
+  a.download = 'surgery-reminders.ics';
+  document.body.appendChild(a); a.click();
+  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 2000);
+}
+function gcalUrl(e) {
+  const p = new URLSearchParams({ action: 'TEMPLATE', text: e.title, dates: `${ymdC(e.start)}/${ymdC(e.end)}`, details: e.desc });
+  if (e.rrule) p.set('recur', 'RRULE:' + e.rrule);
+  return 'https://calendar.google.com/calendar/render?' + p;
+}
+const gAdded = new Set(); // Google items tapped in the open sheet
+
+const actionDlg = document.getElementById('action');
+const actionBody = document.getElementById('actionBody');
+let pending = [];
+function showSheet(html) { actionBody.innerHTML = '<div class="grabber"></div>' + html; if (!actionDlg.open) actionDlg.showModal(); }
+function closeSheet() { actionDlg.close(); render(); }
+
+function addFlow(ids) {
+  const c = context();
+  pending = ids;
+  const what = ids.length === 1 ? findStep(c, ids[0]).title : `${ids.length} reminders`;
+  showSheet(`<h3>Add to calendar</h3><p class="lead">${what}</p>
+    <div class="group">
+      <button class="sheet-opt" data-act="apple">${tile('apple', 'var(--red)')}<span class="grow">Apple Calendar<span class="small">iPhone, iPad, Mac, Outlook</span></span></button>
+      <button class="sheet-opt" data-act="google">${tile('google', 'var(--blue)')}<span class="grow">Google Calendar<span class="small">Android, Gmail</span></span></button>
+    </div>
+    <button class="btn plain block" data-act="cancel">Cancel</button>`);
+}
+
+function googleList() {
+  const c = context();
+  showSheet(`<h3>Add to Google Calendar</h3><p class="lead">Tap each one, then tap Save in Google Calendar.</p>
+    <div class="group">${pending.map(id => {
+      const e = calEvent(c, id);
+      return `<button class="sheet-opt" data-gadd="${id}"><span class="grow">${findStep(c, id).title}<span class="small">${fmtShort(e.start)}</span></span>${gAdded.has(id) ? '<span class="chip added">' + svg('check', 2.5) + 'Added</span>' : '<span class="chip accent">' + svg('cal') + 'Add</span>'}</button>`;
+    }).join('')}</div>
+    <button class="btn block" data-act="done">Done</button>`);
+}
+
+actionDlg.addEventListener('click', e => {
+  if (e.target === actionDlg) return closeSheet();
+  const b = e.target.closest('[data-act],[data-gadd]');
+  if (!b) return;
+  const c = context();
+  if (b.dataset.gadd) {
+    window.open(gcalUrl(calEvent(c, b.dataset.gadd)), '_blank', 'noopener');
+    gAdded.add(b.dataset.gadd);
+    return googleList();
+  }
+  switch (b.dataset.act) {
+    case 'apple': openAppleCalendar(pending.map(id => calEvent(c, id))); return closeSheet();
+    case 'google':
+      if (pending.length === 1) { window.open(gcalUrl(calEvent(c, pending[0])), '_blank', 'noopener'); return closeSheet(); }
+      gAdded.clear();
+      return googleList();
+    default: return closeSheet();
+  }
+});
+
+/* ============================================================
+   PHASE CONTENT
+   ============================================================ */
+function renderPre(c) {
+  const S = c.surgeon;
+  return `
+    <div class="sec-row"><h2 class="sec-title">Your checklist</h2>${calAllBtn(c, 'pre')}</div>
+    ${group(steps(c, preSteps(c), 'pre'))}
+
+    ${title('Good to know')}
+    ${group(
+      row('clip', 'var(--blue)', 'Medical clearance', more(ul([
+        'We’ll tell you if you need it.',
+        'If you do, surgery can’t happen without it.',
+      ]))) +
+      row('pill', 'var(--green)', 'Prescriptions', more(ul([
+        'Give us your pharmacy and any medicine allergies.',
+        '<strong>Aspirin</strong> prevents blood clots.',
+        '<strong>Diclofenac</strong> eases pain and swelling.',
+        '<strong>Cephalexin</strong> is an antibiotic.',
+        '<strong>Percocet</strong> is a strong pain medicine. Use only if needed.',
+      ])))
+    )}
+
+    ${title('More information')}
+    ${group(
+      acc('doc', 'var(--gray)', 'Work and disability forms', ul([
+        'Send as a scanned PDF on MyChart, or by fax.',
+        'FMLA forms: before surgery. Disability forms: after.',
+        'They take 5 to 7 business days.',
+      ])) +
+      acc('leaf', 'var(--green)', 'Eating for recovery', ul([
+        'Eat lean protein and leafy greens.',
+        'Avoid sugary drinks and processed food.',
+        'Optional: <strong>XR Recovery Program</strong> (<a href="https://xrscience.org" target="_blank" rel="noopener">xrscience.org</a>, 20% off with code <strong>GLMDNYU20</strong>) or <strong>Klean Athlete</strong> (Amazon). Choose one.',
+      ])) +
+      acc('nosmoke', 'var(--red)', 'Smoking', ul(['Quitting helps you heal.', 'Ask us if you’d like help.'])) +
+      acc('play', 'var(--pink)', 'Videos about your surgery', `<p>Go to <a href="${S.website}" target="_blank" rel="noopener">${S.website.replace('https://', '')}</a>, then Patient Information, then Patient Education.</p>`) +
+      acc('pin', 'var(--orange)', 'Where surgery happens', `<p>${S.name} operates on ${S.opDays} at one of:</p>${ul(S.sites.map(x => `${x.name}<br>${mapLink(x.addr)}`))}`) +
+      acc('chat', 'var(--teal)', 'MyChart', ul(['See your appointments and instructions.', 'Message us. Replies take 1 to 3 business days.']))
+    )}
+  `;
+}
+
+function renderDay(c) {
+  return `
+    ${title('The night before')}
+    <div class="callout purple">${tile('moon', 'var(--indigo)')}<div class="row-main">
+      <div class="row-title">Nothing to eat or drink after midnight</div>
+      ${more(ul([
+        'No food, drinks, gum, mints or candy.',
+        'Only take a sip of water if the nurse tells you to.',
+        'On a GLP-1 medicine (like Ozempic)? Nothing for 12 hours before check-in.',
+      ]))}
+    </div></div>
+
+    ${title('The morning of')}
+    ${group(
+      row('drop', 'var(--blue)', 'Getting ready', more(ul([
+        'Shower and brush your teeth as usual. Don’t swallow the water.',
+        'No lotion, makeup, deodorant or perfume.',
+        'Wear glasses, not contact lenses.',
+        'Remove nail polish if you can.',
+        'Wear a shirt that buttons or zips in front, and supportive shoes.',
+        'Leave jewelry and valuables at home.',
+      ]))) +
+      row('users', 'var(--orange)', 'Someone must take you home', more(ul([
+        'An adult must be in the building to take you home.',
+        'They don’t need to stay all day.',
+      ])))
+    )}
+
+    ${title('What to bring', 'Tap to check off.')}
+    ${group(checklist('bring', [
+      'Photo ID',
+      'Insurance card',
+      'List of your medicines and allergies',
+      'Glasses',
+      'Case for dentures, if you have them',
+    ]))}
+
+    ${title('What to expect')}
+    ${group(
+      row('clock', 'var(--teal)', 'You go home the same day', more(ul([
+        'Plan for about 4 to 6 hours in total.',
+        `${c.surgeon.name} will see you before surgery.`,
+      ]))) +
+      row('bed', 'var(--indigo)', 'Anesthesia', more(ul([
+        'You’ll be asleep, breathing on your own.',
+        'A nerve block numbs your arm for 1 to 3 days.',
+        'Pain may start as the numbness wears off.',
+      ])))
+    )}
+  `;
+}
+
+function renderPost(c) {
+  return `
+    <div class="callout red" style="margin-top:8px">${tile('alert', 'var(--red)')}<div class="row-main">
+      <div class="row-title">Call us right away if you have</div>
+      ${ul([
+        'Fever over 101°F or chills',
+        'Bleeding or fluid soaking the bandage',
+        'Pain that keeps getting worse',
+        'A hand that is cold, blue or numb after the first 3 days',
+      ])}
+      ${more(ul([
+        'More swelling or redness',
+        'Vomiting, diarrhea or stomach pain that won’t stop',
+        'No bowel movement for 3 days, even with a laxative',
+      ]), 'Other warning signs', 'Hide')}
+      <p>Call the office day or night. Numbers are below.</p>
+    </div></div>
+
+    <div class="sec-row"><h2 class="sec-title">Your recovery</h2>${calAllBtn(c, 'post')}</div>
+    ${group(steps(c, postSteps(c), 'post'))}
+
+    ${title('Caring for your arm')}
+    ${group(
+      row('sling', 'var(--accent)', c.kind === 'scope' ? 'Sling' : 'Splint and sling', more(byKind(c,
+        ul(['Wear the sling for support.', 'You can take it off to shower and dress.']),
+        ul(['<strong>Don’t remove the splint.</strong> We take it off at your check-up.', 'Wear the sling. You can take it off to shower and dress.'])))) +
+      row('drop', 'var(--blue)', 'Showering, from day 2', more(byKind(c,
+        ul(['No baths.', 'Let soapy water run over the cuts. Don’t scrub.', 'Pat dry. Put on new band-aids every day.']),
+        ul(['No baths.', 'Cover the splint with a plastic bag.', 'Keep it dry.'])))) +
+      row('snow', 'var(--teal)', 'Ice', more(ul(['15 minutes on, 15 minutes off.', '3 to 4 times a day.', 'Never directly on the skin.']))) +
+      row('pill', 'var(--green)', 'Medicines', more(ul([
+        'Take them with food.',
+        'Don’t take extra Tylenol. Percocet already has it.',
+        'Don’t take Advil or Aleve. Diclofenac works the same way.',
+        'Constipated? Try Colace or Miralax, and let us know.',
+      ])))
+    )}
+
+    ${title('More information')}
+    ${group(
+      acc('activity', 'var(--orange)', 'Exercises and therapy', byKind(c,
+        ul(['You’ll get home exercises when you leave the hospital.']),
+        ul(['No exercises while in the splint.', 'At your check-up you’ll get a brace and start therapy.'])) +
+        `<p>Therapy plans are at <a href="${c.surgeon.website}" target="_blank" rel="noopener">${c.surgeon.website.replace('https://', '')}</a>.</p>`) +
+      acc('car', 'var(--gray)', 'Driving', ul([`Not until ${c.surgeon.name} says it’s OK.`, 'Usually 2 to 6 weeks.'])) +
+      acc('doc', 'var(--gray)', 'Disability forms', ul(['Send as a scanned PDF on MyChart.', 'They take 5 to 7 business days.']))
+    )}
+  `;
+}
+
+function renderContacts(c) {
+  const tel = p => 'tel:+1' + p.replace(/\D/g, '');
+  return `${title('Contact us')}
+    ${group(
+      c.surgeon.contacts.map(x => `<div class="row contact">${tile('phone', 'var(--green)')}<div class="row-main"><div class="row-title">${x.name}</div><div class="row-sub">${x.who}. ${x.role}</div></div><a class="call" href="${tel(x.phone)}">${svg('phone')}Call</a></div>`).join('') +
+      row('chat', 'var(--teal)', 'Non-urgent questions', '<div class="row-sub">Message us on MyChart.</div>') +
+      row('moon', 'var(--indigo)', 'Nights and weekends', '<div class="row-sub">Call either number to reach the doctor on call.</div>') +
+      row('hospital', 'var(--red)', 'Orthopedic urgent care', `<div class="row-sub">${URGENT_CARE.name}<br>${mapLink(URGENT_CARE.addr)}. ${URGENT_CARE.hours}.</div>`)
+    )}`;
+}
+
+function renderHero(c) {
+  const el = document.getElementById('hero');
+  if (!c.surgery) {
+    el.innerHTML = `<div class="hero-big">Add your surgery date</div>
+      <div class="hero-sub">See a countdown and the date for each step.</div>
+      <button class="btn" type="button" style="margin-top:14px" onclick="openSetup()">Add Date</button>`;
+    return;
+  }
+  const d = c.days;
+  const nextRow = it => it ? `<div class="hero-next">
+      <div class="cal"><span class="m">${monAbbr(stepDate(c, it))}</span><span class="d">${stepDate(c, it).getDate()}</span></div>
+      <div><div class="k">Next step</div><div class="t">${it.title}</div><div class="s">${fmtShort(stepDate(c, it))}</div></div></div>` : '';
+  if (d >= 2) {
+    el.innerHTML = `<div class="hero-num">${d}</div><div class="hero-label">days until surgery</div><div class="hero-sub">${fmtLong(c.surgery)}</div>${nextRow(nextStep(c, preSteps(c)))}`;
+  } else if (d === 1) {
+    el.innerHTML = `<div class="hero-kicker">${fmtLong(c.surgery)}</div><div class="hero-big">Surgery is tomorrow</div><div class="hero-alert">Nothing to eat or drink after midnight</div>`;
+  } else if (d === 0) {
+    el.innerHTML = `<div class="hero-kicker">${fmtLong(c.surgery)}</div><div class="hero-big">Today is surgery day</div><div class="hero-sub">Bring your ID and insurance card.</div>`;
+  } else {
+    const n = -d;
+    const sub = n < 14 ? `Week ${Math.floor(n / 7) + 1} of recovery` : `${Math.floor(n / 7)} weeks since surgery`;
+    el.innerHTML = `<div class="hero-kicker">Days since surgery</div><div class="hero-num">${n}</div><div class="hero-label">${sub}</div>${nextRow(nextStep(c, postSteps(c).filter(it => it.off > 0)))}`;
+  }
+}
+
+function renderHeader(c) {
+  document.getElementById('todayLbl').textContent = fmtLong(today());
+  const t = document.getElementById('sbT'), s = document.getElementById('sbS');
+  if (!settings.p && !settings.s && !c.surgery) { t.textContent = 'Add your surgery details'; s.textContent = 'Surgeon, surgery and date'; }
+  else {
+    t.textContent = settings.p ? PROCEDURES[settings.p].label : 'Elbow surgery';
+    s.textContent = [settings.s ? SURGEONS[settings.s].name : '', c.surgery ? fmtLong(c.surgery) : 'No date yet'].filter(Boolean).join(' · ');
+  }
+  document.documentElement.style.setProperty('--top-h', document.querySelector('.topbar').offsetHeight + 'px');
+}
+
+/* ============================================================
+   APP
+   ============================================================ */
+let viewPhase = null;
+
+function render() {
+  const c = context();
+  if (!viewPhase) viewPhase = c.phase || 'pre';
+  renderHeader(c);
+  renderHero(c);
+  document.querySelectorAll('#phases button').forEach(b => {
+    b.setAttribute('aria-selected', b.dataset.phase === viewPhase);
+    b.classList.toggle('is-now', b.dataset.phase === c.phase);
+  });
+  document.getElementById('content').innerHTML =
+    viewPhase === 'pre' ? renderPre(c) : viewPhase === 'day' ? renderDay(c) : renderPost(c);
+  document.getElementById('contacts').innerHTML = renderContacts(c);
+}
+
+document.getElementById('phases').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  viewPhase = b.dataset.phase; render();
+  const segTop = document.querySelector('.seg-wrap').getBoundingClientRect().top + window.scrollY;
+  const header = document.querySelector('.topbar').offsetHeight;
+  if (window.scrollY > segTop - header) window.scrollTo({ top: segTop - header, behavior: 'smooth' });
+});
+
+document.getElementById('content').addEventListener('change', e => {
+  if (!e.target.matches('input[data-k]')) return;
+  const done = store.get(CHECK_KEY, {});
+  done[e.target.dataset.k] = e.target.checked;
+  store.set(CHECK_KEY, done);
+  if (e.target.dataset.k.startsWith('step:')) { const y = window.scrollY; render(); window.scrollTo(0, y); }
+});
+
+document.getElementById('content').addEventListener('click', e => {
+  const b = e.target.closest('[data-cal-add],[data-cal-all]');
+  if (!b) return;
+  const c = context();
+  if (b.dataset.calAdd) return addFlow([b.dataset.calAdd]);
+  const ids = (b.dataset.calAll === 'pre' ? preSteps(c) : postSteps(c)).filter(it => !it.noCal).map(it => it.id);
+  addFlow(ids);
+});
+
+/* Setup sheet */
+const dlg = document.getElementById('setup');
+const fS = document.getElementById('fSurgeon'), fP = document.getElementById('fProc'), fD = document.getElementById('fDate');
+fS.innerHTML = '<option value="">Not sure</option>' + Object.entries(SURGEONS).map(([k, v]) => `<option value="${k}">${v.name}</option>`).join('');
+fP.innerHTML = '<option value="">Not sure</option>' + Object.entries(PROCEDURES).map(([k, v]) => `<option value="${k}">${v.label}</option>`).join('');
+
+function shareLink() {
+  const p = new URLSearchParams();
+  if (fS.value) p.set('s', fS.value);
+  if (fP.value) p.set('p', fP.value);
+  if (fD.value) p.set('d', fD.value);
+  document.getElementById('shareUrl').value = location.origin + location.pathname + (p.toString() ? '?' + p : '');
+}
+[fS, fP, fD].forEach(x => x.addEventListener('input', shareLink));
+
+function openSetup() {
+  fS.value = settings.s; fP.value = settings.p; fD.value = settings.d;
+  document.getElementById('sheetTitle').textContent = settings.setup ? 'Your Surgery' : 'Welcome';
+  document.getElementById('cancelBtn').textContent = settings.setup ? 'Cancel' : 'Skip';
+  shareLink();
+  dlg.showModal();
+}
+window.openSetup = openSetup;
+
+dlg.addEventListener('close', () => {
+  if (dlg.returnValue === 'save') {
+    settings = { s: fS.value, p: fP.value, d: fD.value, setup: true };
+    sanitize();
+    viewPhase = null;
+  } else {
+    settings.setup = true;
+  }
+  store.set(KEY, settings);
+  render();
+});
+dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close('cancel'); });
+document.getElementById('detailsBtn').addEventListener('click', openSetup);
+
+render();
+if (!settings.setup) openSetup();
+</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+Patient Surgery Guide: deploying to Netlify
+===========================================
+
+What's in this folder
+  public/index.html            the whole site (content is in the CONTENT block at the top of the script)
+  public/logo.png, icons       NYU Langone Orthopedics logo and home-screen icons
+  netlify/functions/ics.mjs    makes "Add to Apple Calendar" open the calendar instead of a file
+  netlify.toml                 tells Netlify where the site and function are
+  serve.py                     local preview only (not used by Netlify)
+
+Deploy (and every redeploy)
+  1. In Netlify, create a NEW site (separate from the tracker) or open this site > Deploys.
+  2. Drag this whole "nyupatient" folder onto the deploy area (the whole folder,
+     not just public/, or the calendar function won't be included).
+  3. Check: https://YOUR-SITE.netlify.app/api/ics should say "Bad request" (function is live).
+     "Page not found" means the function didn't deploy; Apple Calendar then falls back to
+     a file download. Fix by deploying with: npx netlify-cli deploy --prod
+
+Links / QR codes
+  https://YOUR-SITE.netlify.app/?s=lomas&p=dbr&d=2026-12-01
+    s = surgeon    lomas
+    p = procedure  scope (elbow arthroscopy), dbr (distal biceps), ucl, unt (ulnar nerve
+                   transposition), epi (epicondylectomy), open (other open elbow)
+    d = surgery date, YYYY-MM-DD
+  All are optional. Leave d off for a generic surgeon/procedure QR code.
+  The setup box on the site has a "For clinic staff" link builder.
+
+Testing
+  Add &today=MM-DD-YYYY to pretend it's a different day (e.g. &today=12-05-2026 to see the recovery view).
