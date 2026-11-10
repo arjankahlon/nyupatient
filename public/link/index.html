@@ -55,6 +55,8 @@
   .btn { flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 12px; padding: 10px 16px; font-size: 17px; font-weight: 600; background: var(--accent); color: #fff; cursor: pointer; }
   .btn.plain { background: var(--fill); color: var(--accent); }
   .btn.ok { background: var(--green); }
+  /* Netlify adds a "Powered by Netlify" badge to every page on the free plan; keep it hidden */
+  #nl-badge-frame { display: none !important; }
 </style>
 </head>
 <body>

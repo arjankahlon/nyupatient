@@ -354,6 +354,8 @@
   }
   @media (max-height: 620px) { .in-s { display: none; } .in-head img { width: 40px; height: 40px; } .in-head h2 { font-size: 19px; } }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  /* Netlify adds a "Powered by Netlify" badge to every page on the free plan; keep it hidden */
+  #nl-badge-frame { display: none !important; }
 </style>
 </head>
 <body>
