@@ -157,23 +157,52 @@
   .step { display: flex; gap: 14px; padding: 14px 16px; position: relative; }
   .step + .step::before { content: ""; position: absolute; top: 0; right: 0; left: 72px; border-top: .5px solid var(--sep); }
   .cal { width: 42px; flex: none; border-radius: 10px; overflow: hidden; text-align: center; background: var(--card); box-shadow: 0 0 0 .5px var(--sep), 0 1px 2px rgba(0,0,0,.06); align-self: flex-start; }
-  .cal .m { display: block; background: var(--accent); color: #fff; font-size: 11px; font-weight: 700; letter-spacing: .04em; padding: 2px 0 1px; }
+  .cal .m { display: block; background: var(--accent-tint); color: var(--accent); font-size: 11px; font-weight: 700; letter-spacing: .04em; padding: 2px 0 1px; }
   .cal .d { display: block; font-family: var(--rounded); font-size: 20px; font-weight: 700; padding: 2px 0 3px; line-height: 1.15; }
   .cal.rel .d { font-size: 17px; }
   .cal.rel .m { font-size: 10px; }
   .step-when { font-size: 14px; color: var(--label-2); display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
   .step-title { font-weight: 600; font-size: 18px; line-height: 1.3; letter-spacing: -.015em; }
-  .badge { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--accent); color: #fff; letter-spacing: .02em; }
+  .badge { font-size: 12px; font-weight: 700; padding: 2px 8px; border-radius: 999px; background: var(--orange); color: #fff; letter-spacing: .02em; }
+  .badge.red { background: var(--red); }
+  .step-top { display: flex; align-items: center; gap: 8px; min-height: 24px; }
+  .step-top .step-when { flex: 1; min-width: 0; }
+  .step-right { flex: none; display: flex; align-items: center; gap: 8px; margin: -4px 0; }
+  .step-right .calbtn { width: 32px; height: 32px; }
+  .step-right .badge { white-space: nowrap; }
+  button.badge { border: 0; font-family: inherit; cursor: pointer; }
+  /* Row states: due today (orange), overdue (red), done (green) */
+  .step.today { background: #fff4e3; }
+  .step.overdue { background: #fdeceb; }
+  .step.done { background: #eaf6ec; }
   .step.done .cal { opacity: .45; }
-  .step.done .step-title { color: var(--label-2); text-decoration: line-through; text-decoration-color: var(--label-3); }
-  .step.done .cal .m { background: var(--gray); }
+  .step.done .step-title { color: var(--label-2); }
+  .step.done .cal .m { background: var(--fill); color: var(--label-2); }
   .step.surgery .cal { box-shadow: 0 0 0 2px var(--accent); }
-  .stepcheck { flex: none; align-self: flex-start; margin-top: 8px; cursor: pointer; position: relative; padding: 4px; margin-right: -4px; }
+  .step-left { flex: none; width: 42px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+  .stepcheck { cursor: pointer; position: relative; display: block; }
   .stepcheck input { position: absolute; opacity: 0; pointer-events: none; }
   .stepcheck .box { width: 28px; height: 28px; border-radius: 50%; border: 2px solid var(--label-3); display: grid; place-items: center; transition: background .15s, border-color .15s; }
-  .stepcheck .box svg { width: 16px; height: 16px; color: #fff; opacity: 0; }
-  .stepcheck input:checked + .box { background: var(--accent); border-color: var(--accent); }
-  .stepcheck input:checked + .box svg { opacity: 1; }
+  .stepcheck .box svg { width: 16px; height: 16px; color: var(--label-3); opacity: .55; }
+  .stepcheck input:checked + .box { background: var(--green); border-color: var(--green); }
+  .stepcheck input:checked + .box svg { opacity: 1; color: #fff; }
+  .stepcheck input:focus-visible + .box { outline: 3px solid var(--accent-tint); outline-offset: 2px; }
+  .calbtn { flex: none; align-self: flex-start; width: 36px; height: 36px; border-radius: 50%; border: 0; background: var(--accent); color: #fff; display: grid; place-items: center; cursor: pointer; }
+  .calbtn svg { width: 18px; height: 18px; }
+  .chip.dark { background: var(--accent); color: #fff; }
+
+  /* Link row (e.g. full packet) */
+  .linkrow { width: 100%; border: 0; background: transparent; text-align: left; cursor: pointer; color: var(--label); align-items: center; }
+  .linkrow .chev { width: 9px; height: 9px; border-right: 2px solid var(--label-3); border-bottom: 2px solid var(--label-3); transform: rotate(-45deg); margin-right: 4px; flex: none; }
+
+  /* Full packet viewer (in-app page) */
+  .packet { position: fixed; inset: 0; z-index: 50; background: var(--bg); display: flex; flex-direction: column; }
+  .packet[hidden] { display: none; }
+  .packet-bar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: calc(env(safe-area-inset-top) + 6px) 8px 6px; min-height: 52px; background: rgba(242,242,247,.92); border-bottom: .5px solid var(--sep); }
+  .packet-back { justify-self: start; display: inline-flex; align-items: center; gap: 2px; border: 0; background: transparent; color: var(--accent); font-size: 17px; cursor: pointer; padding: 8px; }
+  .packet-back svg { width: 22px; height: 22px; }
+  .packet-title { font-weight: 600; }
+  .packet iframe { flex: 1; width: 100%; border: 0; background: #fff; }
   .step-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; align-items: flex-start; }
   .step-actions details.more { margin-top: 0; }
   .step-actions details.more[open] { flex-basis: 100%; }
@@ -307,6 +336,15 @@
   </form>
 </dialog>
 
+<section class="packet" id="packetView" hidden aria-label="Full surgery packet">
+  <div class="packet-bar">
+    <button class="packet-back" id="packetBack" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>Back</button>
+    <div class="packet-title">Surgery Packet</div>
+    <span></span>
+  </div>
+  <iframe id="packetFrame" title="Full surgery packet"></iframe>
+</section>
+
 <dialog id="action"><div class="sheet" id="actionBody"></div></dialog>
 
 <script>
@@ -322,6 +360,7 @@ const SURGEONS = {
   lomas: {
     name: 'Dr. Lomas',
     website: 'https://lomasortho.com',
+    packet: 'packets/lomas-elbow.pdf',
     opDays: 'Tuesdays and Fridays',
     contacts: [
       { name: 'Surgical scheduling', who: 'Anetam Kaur', role: 'Insurance, forms, and urgent questions', phone: '646-460-8723' },
@@ -334,7 +373,7 @@ const SURGEONS = {
     ],
   },
 };
-const URGENT_CARE = { name: 'Samuel’s Immediate Care (orthopedic urgent care)', addr: '301 E 17th St', hours: 'Open daily, 8 AM to 10 PM' };
+const URGENT_CARE = { name: 'Samuels Orthopedic Immediate Care Center', addr: '301 E 17th St', hours: 'Open Sun to Thu 8 AM to 9 PM, Fri and Sat 8 AM to 10:30 PM', phone: '212-598-7600' };
 
 // Tappable address: Apple Maps on Apple devices, Google Maps elsewhere.
 function mapLink(addr) {
@@ -497,24 +536,31 @@ function steps(c, items, phase) {
   const nxt = nextStep(c, items);
   return '<ol class="steps">' + items.map(it => {
     const k = 'step:' + it.id, isDone = !!done[k];
-    let badge = '', calBadge, when;
+    let badge = '', state = isDone ? 'done' : '', calBadge, when;
     if (c.surgery) {
       const at = stepDate(c, it), end = stepEnd(c, it);
-      if (it === nxt) badge = diffDays(at, t) <= 0 ? '<span class="badge">Today</span>' : '<span class="badge">Next</span>';
+      if (!isDone) {
+        // Tapping Today/Overdue checks the item off, same as the checkbox.
+        const tag = (cls, label) => `<button type="button" class="badge ${cls}" data-toggle="${k}" aria-label="${label}: mark as done">${label}</button>`;
+        if (diffDays(end, t) < 0) { state = 'overdue'; badge = tag('red', 'Overdue'); }
+        else if (diffDays(at, t) <= 0) { state = 'today'; badge = tag('', 'Today'); }
+        else if (it === nxt) badge = '<span class="badge">Next</span>';
+      }
       calBadge = `<div class="cal"><span class="m">${monAbbr(at)}</span><span class="d">${at.getDate()}</span></div>`;
       const dates = it.until != null ? `${fmtShort(at)} to ${fmtShort(end)}` : fmtShort(at);
-      when = `${dates} · ${relLabel(c, it, phase)}`;
+      when = `${relLabel(c, it, phase)} · ${dates}`;
     } else {
       calBadge = `<div class="cal rel"><span class="m">${it.calM}</span><span class="d">${it.calD}</span></div>`;
       when = relLabel(c, it, phase);
     }
-    const calBtn = c.surgery && !it.noCal && IS_MOBILE ? `<button type="button" class="chip" data-cal-add="${it.id}">${svg('cal')}Add to calendar</button>` : '';
-    const actions = (it.body ? more(it.body) : '') + calBtn;
-    return `<li class="step${isDone ? ' done' : ''}${it.surgery ? ' surgery' : ''}">${calBadge}<div class="row-main">
-        <div class="step-when">${when}${badge}</div>
+    const name = it.title.replace(/<[^>]+>/g, '');
+    const calBtn = c.surgery && !it.noCal && IS_MOBILE ? `<button type="button" class="calbtn" data-cal-add="${it.id}" aria-label="Add “${name}” to calendar" title="Add to calendar">${svg('cal')}</button>` : '';
+    const check = `<label class="stepcheck" title="Mark as done"><input type="checkbox" data-k="${k}" aria-label="Mark “${name}” as done" ${isDone ? 'checked' : ''}><span class="box">${svg('check', 3)}</span></label>`;
+    return `<li class="step ${state}${it.surgery ? ' surgery' : ''}"><div class="step-left">${calBadge}${check}</div><div class="row-main">
+        <div class="step-top"><div class="step-when">${when}</div>${badge || calBtn ? `<div class="step-right">${badge}${calBtn}</div>` : ''}</div>
         <div class="step-title">${it.title}</div>
-        ${actions ? `<div class="step-actions">${actions}</div>` : ''}
-      </div><label class="stepcheck" title="Mark as done"><input type="checkbox" data-k="${k}" aria-label="Mark “${it.title.replace(/<[^>]+>/g, '')}” as done" ${isDone ? 'checked' : ''}><span class="box">${svg('check', 3)}</span></label></li>`;
+        ${it.body ? `<div class="step-actions">${more(it.body)}</div>` : ''}
+      </div></li>`;
   }).join('') + '</ol>';
 }
 
@@ -524,7 +570,7 @@ const IS_MOBILE = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (/Mac
 // "Add all to calendar" button for a list.
 function calAllBtn(c, phase) {
   if (!c.surgery || !IS_MOBILE) return '';
-  return `<button type="button" class="chip accent" data-cal-all="${phase}">${svg('cal')}Add all to calendar</button>`;
+  return `<button type="button" class="chip dark" data-cal-all="${phase}">${svg('cal')}Add all to calendar</button>`;
 }
 
 /* ============================================================
@@ -652,7 +698,12 @@ async function openAppleCalendar(evs) {
   const url = icsUrl(evs);
   try {
     const r = await fetch(url, { method: 'HEAD', cache: 'no-store' });
-    if (r.ok && (r.headers.get('content-type') || '').includes('text/calendar')) { location.href = url; return; }
+    if (r.ok && (r.headers.get('content-type') || '').includes('text/calendar')) {
+      // In the home-screen app, open outside it so the calendar screen can't strand the user.
+      if (navigator.standalone || matchMedia('(display-mode: standalone)').matches) window.open(url, '_blank');
+      else location.href = url;
+      return;
+    }
   } catch {}
   // Fallback: plain file download.
   const a = document.createElement('a');
@@ -716,6 +767,23 @@ actionDlg.addEventListener('click', e => {
   }
 });
 
+// Shared by Before and Recovery.
+const EATING = ul([
+  'Good nutrition helps your body heal. Keep it up before <strong>and</strong> after surgery.',
+  '<strong>Protein at every meal:</strong> chicken, fish or lean meat, or beans and lentils if you’re vegetarian or vegan.',
+  '<strong>Leafy greens:</strong> spinach, kale.',
+  '<strong>Limit</strong> sugary drinks and processed foods.',
+  '<strong>Vitamins:</strong> vitamin D 2,000 IU and vitamin C 1,000 mg every day, from 1 week before to 6 weeks after surgery.',
+  '<strong>Optional, choose one:</strong> the XR Recovery Program (<a href="https://xrscience.org" target="_blank" rel="noopener">xrscience.org</a>, 1 week before to 2 weeks after surgery, 20% off with code <strong>GLMDNYU20</strong>), or Klean Athlete on Amazon (HMB + amino acids, or collagen + vitamin C in berry).',
+]);
+// Packet: "strongly recommended, reach out for guidance". The healing and quitline lines are general guidance, not from the packet.
+const SMOKING = ul([
+  '<strong>Quitting is strongly recommended because it helps you heal.</strong>',
+  'Smoking slows healing of bone, tendons and skin, and raises the risk of infection.',
+  'Ask us if you’d like help quitting.',
+  'Free help: NY State Smokers’ Quitline, <a href="tel:+18666978487">1-866-NY-QUITS</a> (1-866-697-8487).',
+]);
+
 /* ============================================================
    PHASE CONTENT
    ============================================================ */
@@ -727,35 +795,30 @@ function renderPre(c) {
 
     ${title('Good to know')}
     ${group(
-      row('clip', 'var(--blue)', 'Medical clearance', more(ul([
-        'We’ll tell you if you need it.',
-        'If you do, surgery can’t happen without it.',
-      ]))) +
-      row('pill', 'var(--green)', 'Prescriptions', more(ul([
+      row('pill', 'var(--green)', 'What are my prescriptions for?', more(ul([
         'Give us your pharmacy and any medicine allergies.',
         '<strong>Aspirin</strong> prevents blood clots.',
         '<strong>Diclofenac</strong> eases pain and swelling.',
         '<strong>Cephalexin</strong> is an antibiotic.',
         '<strong>Percocet</strong> is a strong pain medicine. Use only if needed.',
-      ])))
+      ]))) +
+      row('leaf', 'var(--green)', 'Eating for recovery', '<div class="row-sub">Before and after surgery</div>' + more(EATING))
     )}
 
     ${title('More information')}
     ${group(
+      acc('clip', 'var(--blue)', 'Medical clearance', ul([
+        'We’ll tell you if you need it.',
+        'If you do, surgery can’t happen without it.',
+      ])) +
+      acc('nosmoke', 'var(--red)', 'Smoking', SMOKING) +
+      acc('play', 'var(--pink)', 'Videos about your surgery', `<p>Go to <a href="${S.website}" target="_blank" rel="noopener">${S.website.replace('https://', '')}</a>, then Patient Information, then Patient Education.</p>`) +
+      acc('pin', 'var(--orange)', 'Where surgery happens', `<p>${S.name} operates on ${S.opDays} at one of:</p>${ul(S.sites.map(x => `${x.name}<br>${mapLink(x.addr)}`))}`) +
       acc('doc', 'var(--gray)', 'Work and disability forms', ul([
         'Send as a scanned PDF on MyChart, or by fax.',
         'FMLA forms: before surgery. Disability forms: after.',
         'They take 5 to 7 business days.',
-      ])) +
-      acc('leaf', 'var(--green)', 'Eating for recovery', ul([
-        'Eat lean protein and leafy greens.',
-        'Avoid sugary drinks and processed food.',
-        'Optional: <strong>XR Recovery Program</strong> (<a href="https://xrscience.org" target="_blank" rel="noopener">xrscience.org</a>, 20% off with code <strong>GLMDNYU20</strong>) or <strong>Klean Athlete</strong> (Amazon). Choose one.',
-      ])) +
-      acc('nosmoke', 'var(--red)', 'Smoking', ul(['Quitting helps you heal.', 'Ask us if you’d like help.'])) +
-      acc('play', 'var(--pink)', 'Videos about your surgery', `<p>Go to <a href="${S.website}" target="_blank" rel="noopener">${S.website.replace('https://', '')}</a>, then Patient Information, then Patient Education.</p>`) +
-      acc('pin', 'var(--orange)', 'Where surgery happens', `<p>${S.name} operates on ${S.opDays} at one of:</p>${ul(S.sites.map(x => `${x.name}<br>${mapLink(x.addr)}`))}`) +
-      acc('chat', 'var(--teal)', 'MyChart', ul(['See your appointments and instructions.', 'Message us. Replies take 1 to 3 business days.']))
+      ]))
     )}
   `;
 }
@@ -852,11 +915,13 @@ function renderPost(c) {
 
     ${title('More information')}
     ${group(
+      acc('leaf', 'var(--green)', 'Eating for recovery', EATING) +
       acc('activity', 'var(--orange)', 'Exercises and therapy', byKind(c,
         ul(['You’ll get home exercises when you leave the hospital.']),
         ul(['No exercises while in the splint.', 'At your check-up you’ll get a brace and start therapy.'])) +
         `<p>Therapy plans are at <a href="${c.surgeon.website}" target="_blank" rel="noopener">${c.surgeon.website.replace('https://', '')}</a>.</p>`) +
       acc('car', 'var(--gray)', 'Driving', ul([`Not until ${c.surgeon.name} says it’s OK.`, 'Usually 2 to 6 weeks.'])) +
+      acc('nosmoke', 'var(--red)', 'Smoking', SMOKING) +
       acc('doc', 'var(--gray)', 'Disability forms', ul(['Send as a scanned PDF on MyChart.', 'They take 5 to 7 business days.']))
     )}
   `;
@@ -864,12 +929,13 @@ function renderPost(c) {
 
 function renderContacts(c) {
   const tel = p => 'tel:+1' + p.replace(/\D/g, '');
-  return `${title('Contact us')}
+  const packetBtn = c.surgeon.packet ? group(`<button type="button" class="row linkrow" data-packet>${tile('doc', 'var(--accent)')}<span class="row-main"><span class="row-title" style="display:block">View the full surgery packet</span><span class="row-sub" style="display:block">All the instructions from ${c.surgeon.name}’s office</span></span><span class="chev"></span></button>`) : '';
+  return `${packetBtn}${title('Contact us')}
     ${group(
       c.surgeon.contacts.map(x => `<div class="row contact">${tile('phone', 'var(--green)')}<div class="row-main"><div class="row-title">${x.name}</div><div class="row-sub">${x.who}. ${x.role}</div></div><a class="call" href="${tel(x.phone)}">${svg('phone')}Call</a></div>`).join('') +
-      row('chat', 'var(--teal)', 'Non-urgent questions', '<div class="row-sub">Message us on MyChart.</div>') +
+      row('chat', 'var(--teal)', 'MyChart', '<div class="row-sub">Message us with non-urgent questions (replies in 1 to 3 business days), and see your appointments and instructions.</div>') +
       row('moon', 'var(--indigo)', 'Nights and weekends', '<div class="row-sub">Call either number to reach the doctor on call.</div>') +
-      row('hospital', 'var(--red)', 'Orthopedic urgent care', `<div class="row-sub">${URGENT_CARE.name}<br>${mapLink(URGENT_CARE.addr)}. ${URGENT_CARE.hours}.</div>`)
+      `<div class="row contact">${tile('hospital', 'var(--red)')}<div class="row-main"><div class="row-title">Orthopedic urgent care</div><div class="row-sub">${URGENT_CARE.name}<br>${mapLink(URGENT_CARE.addr)}. ${URGENT_CARE.hours}.</div></div><a class="call" href="${tel(URGENT_CARE.phone)}">${svg('phone')}Call</a></div>`
     )}`;
 }
 
@@ -945,6 +1011,12 @@ document.getElementById('content').addEventListener('change', e => {
 });
 
 document.getElementById('content').addEventListener('click', e => {
+  const tg = e.target.closest('[data-toggle]');
+  if (tg) {
+    const cb = document.querySelector(`input[data-k="${tg.dataset.toggle}"]`);
+    if (cb) { cb.checked = !cb.checked; cb.dispatchEvent(new Event('change', { bubbles: true })); }
+    return;
+  }
   const b = e.target.closest('[data-cal-add],[data-cal-all]');
   if (!b) return;
   const c = context();
@@ -991,7 +1063,41 @@ dlg.addEventListener('close', () => {
 dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close('cancel'); });
 document.getElementById('detailsBtn').addEventListener('click', openSetup);
 
+/* Full packet: shown as an in-app page (#packet) so the iPhone home-screen app keeps a Back button. */
+const packetView = document.getElementById('packetView');
+let packetOpenedHere = false;
+function syncPacket() {
+  const show = location.hash === '#packet';
+  if (show) {
+    const f = document.getElementById('packetFrame');
+    const src = context().surgeon.packet + '#view=FitH';
+    if (f.getAttribute('src') !== src) f.setAttribute('src', src);
+  }
+  packetView.hidden = !show;
+  document.body.style.overflow = show ? 'hidden' : '';
+}
+window.addEventListener('hashchange', syncPacket);
+document.getElementById('contacts').addEventListener('click', e => {
+  if (!e.target.closest('[data-packet]')) return;
+  packetOpenedHere = true;
+  location.hash = 'packet';
+});
+document.getElementById('packetBack').addEventListener('click', () => {
+  if (packetOpenedHere) history.back();
+  else history.replaceState(null, '', location.pathname + location.search), syncPacket();
+  packetOpenedHere = false;
+});
+
+/* Links to other sites always open outside the app (new tab / Safari), so a
+   home-screen web app never strands someone on a page with no Back button. */
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href]');
+  if (!a || !/^https?:/.test(a.href) || new URL(a.href).origin === location.origin) return;
+  a.target = '_blank'; a.rel = 'noopener';
+});
+
 render();
+syncPacket();
 if (!settings.setup) openSetup();
 </script>
 </body>
