@@ -534,16 +534,26 @@ const store = {
 
 const qs = new URLSearchParams(location.search);
 let settings = store.get(KEY, { s: '', a: '', p: '', st: '', d: '', setup: false });
+// Details in the link are applied once per link. The saved home-screen app reopens with the
+// same link every time, so without this it would undo any edits the patient made since.
+// A different link (e.g. a new QR code) is applied as usual.
+const APPLIED_KEY = 'periop.applied.v1';
+const linkSig = LINK_KEYS.filter(k => qs.has(k)).map(k => k + '=' + qs.get(k)).join('&');
+const hadLink = !!linkSig;
 let fromUrl = false;
-for (const k of LINK_KEYS) {
-  if (qs.has(k)) { settings[k] = qs.get(k); fromUrl = true; }
+if (hadLink && linkSig !== store.get(APPLIED_KEY, '')) {
+  for (const k of LINK_KEYS) if (qs.has(k)) settings[k] = qs.get(k);
+  store.set(APPLIED_KEY, linkSig);
+  fromUrl = true;
 }
 sanitize();
+// Ask the browser not to clear saved details after weeks without use.
+try { navigator.storage && navigator.storage.persist && navigator.storage.persist(); } catch {}
 // Testing: ?today=MM-DD-YYYY pretends today is that date.
 const testTodayRaw = qs.get('today') || '';
 const testToday = (m => m ? `${m[3]}-${m[1].padStart(2, '0')}-${m[2].padStart(2, '0')}` : null)(testTodayRaw.match(/^(\d{1,2})-(\d{1,2})-(\d{4})$/));
-if (fromUrl) {
-  store.set(KEY, settings);
+if (fromUrl) store.set(KEY, settings);
+if (hadLink) {
   // Drop the details from the address bar once saved (keep the testing param if present).
   const keep = new URLSearchParams();
   if (testToday) keep.set('today', testTodayRaw);
