@@ -8,13 +8,15 @@ What's in this folder
   netlify.toml                 tells Netlify where the site and function are
   serve.py                     local preview only (not used by Netlify)
 
-Deploy (and every redeploy)
-  1. In Netlify, create a NEW site (separate from the tracker) or open this site > Deploys.
-  2. Drag this whole "nyupatient" folder onto the deploy area (the whole folder,
-     not just public/, or the calendar function won't be included).
-  3. Check: https://YOUR-SITE.netlify.app/api/ics should say "Bad request" (function is live).
-     "Page not found" means the function didn't deploy; Apple Calendar then falls back to
-     a file download. Fix by deploying with: npx netlify-cli deploy --prod
+Netlify setup (same as the tracker)
+  Site: nyupatient (https://nyupatient.netlify.app), linked to github.com/arjankahlon/nyupatient, branch main.
+  Auto publishing is LOCKED: every push builds, but nothing goes live until you click
+  Publish deploy on that build (Netlify > Deploys). Builds that aren't published don't
+  use credits; each publish does.
+
+Check the calendar function after publishing
+  https://nyupatient.netlify.app/api/ics should say "Bad request" (function is live).
+  "Page not found" means it didn't deploy; Apple Calendar then falls back to a file download.
 
 Links / QR codes
   https://YOUR-SITE.netlify.app/?s=lomas&p=dbr&d=2026-12-01
