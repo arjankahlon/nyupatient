@@ -1,6 +1,9 @@
 [build]
   publish = "public"
   functions = "netlify/functions"
+  # NOT LIVE YET: "exit 0" makes Netlify skip every build, so nothing publishes
+  # and no credits are used. Delete this line when it's time to go live.
+  ignore = "exit 0"
 
 [[headers]]
   for = "/*"
