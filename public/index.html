@@ -258,18 +258,18 @@
   .sheet .lead { color: var(--label-2); margin: 0 4px 18px; font-size: 15px; text-align: center; }
   .form-row { display: flex; align-items: center; gap: 12px; padding: 0 16px; min-height: 50px; }
   .group > .form-row + .form-row::before { left: 16px; }
-  .form-row label { flex: none; width: 82px; font-weight: 500; }
+  .form-row label { flex: none; width: 112px; font-weight: 500; }
   .form-row select, .form-row input { flex: 1; min-width: 0; border: 0; background: transparent; font: inherit; font-size: 17px; color: var(--accent); text-align: right; text-align-last: right; padding: 12px 0; -webkit-appearance: none; appearance: none; cursor: pointer; }
+  .form-row select:disabled { color: var(--label-3); cursor: default; }
   .form-row input[type="date"] { min-height: 46px; }
   .form-row input::-webkit-date-and-time-value { text-align: right; }
   .group-foot { font-size: 13px; color: var(--label-2); margin: -4px 16px 18px; display: flex; gap: 6px; }
   .group-foot svg { width: 14px; height: 14px; flex: none; margin-top: 2px; }
   .sheet-actions { display: flex; gap: 10px; }
   .sheet-actions .btn { flex: 1; }
-  .staff { margin-top: 16px; font-size: 13px; text-align: center; }
-  .staff summary { color: var(--label-2); cursor: pointer; list-style: none; }
-  .staff summary::-webkit-details-marker { display: none; }
-  .staff input { width: 100%; font: 13px ui-monospace, Menlo, monospace; padding: 10px; border: 0; border-radius: 10px; margin-top: 8px; background: var(--card); }
+  .staff-link { display: flex; align-items: center; gap: 12px; margin-top: 18px; padding: 12px 14px; border-radius: var(--radius); background: var(--card); color: var(--label-2); font-size: 14px; line-height: 1.3; }
+  .staff-link strong { color: var(--accent); font-size: 16px; }
+  .staff-link svg { width: 28px; height: 28px; color: var(--accent); flex: none; }
 
   @media (max-width: 560px) {
     dialog { width: 100%; max-width: 100%; margin: auto 0 0; border-radius: 16px 16px 0 0; padding-bottom: env(safe-area-inset-bottom); }
@@ -395,6 +395,7 @@
   <footer>
     This guide summarizes general instructions from your surgeon’s office. <strong>If anything here differs from what your care team tells you, follow your care team’s instructions.</strong> In an emergency, call 911.<br><br>
     We don’t collect your name or medical information. Your surgery details are saved only on this device.
+    <a class="staff-link" href="/link/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v.01M14 20h.01M17 20h4v-3"/></svg><span><strong>Link Generator</strong><br>For clinic staff</span></a>
   </footer>
 </div>
 
@@ -406,18 +407,16 @@
     <p class="lead">Add your surgery details to see the right instructions at the right time. All optional.</p>
     <div class="group">
       <div class="form-row"><label for="fSurgeon">Surgeon</label><select id="fSurgeon"></select></div>
+      <div class="form-row"><label for="fArea">Body area</label><select id="fArea"></select></div>
       <div class="form-row"><label for="fProc">Surgery</label><select id="fProc"></select></div>
-      <div class="form-row"><label for="fDate">Date</label><input type="date" id="fDate"></div>
+      <div class="form-row"><label for="fStudy">Studies</label><select id="fStudy"></select></div>
+      <div class="form-row"><label for="fDate">Surgery date</label><input type="date" id="fDate"></div>
     </div>
     <div class="group-foot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span>We never ask for your name. These details stay on this device.</span></div>
     <div class="sheet-actions">
       <button class="btn plain" value="cancel" id="cancelBtn" type="submit">Skip</button>
       <button class="btn" value="save" type="submit">Save</button>
     </div>
-    <details class="staff">
-      <summary>For clinic staff: link with these details</summary>
-      <input id="shareUrl" readonly>
-    </details>
   </form>
 </dialog>
 
@@ -462,32 +461,17 @@
 
 <dialog id="action"><div class="sheet" id="actionBody"></div></dialog>
 
+<script src="catalog.js"></script>
 <script>
 /* ============================================================
    CONTENT
    Everything patient-facing lives here so surgeons/procedures
    can be added or swapped without touching the logic below.
-   URL params: ?s=<surgeon>&p=<procedure>&d=YYYY-MM-DD
+   Surgeons, areas, surgeries and studies are in catalog.js.
+   URL params: ?s=<surgeon>&a=<area>&p=<surgery>&st=<study>&d=YYYY-MM-DD
    Testing only: &today=MM-DD-YYYY pretends today is that date.
    ============================================================ */
 
-const SURGEONS = {
-  lomas: {
-    name: 'Dr. Lomas',
-    website: 'https://lomasortho.com',
-    packet: 'packets/lomas-elbow.pdf',
-    opDays: 'Tuesdays and Fridays',
-    contacts: [
-      { name: 'Surgical scheduling', who: 'Anetam Kaur', role: 'Insurance, forms, and urgent questions', phone: '646-460-8723' },
-      { name: 'Office', who: 'Lorenzo Hayes', role: 'NYU Langone Orthopedic Center', phone: '646-501-7223' },
-    ],
-    sites: [
-      { name: 'NYU Langone Orthopedic Hospital', addr: '301 E 17th St' },
-      { name: 'Essex Crossing Surgical Center', addr: '171 Delancey St' },
-      { name: '38th Street Surgical Center', addr: '339 E 38th St' },
-    ],
-  },
-};
 const URGENT_CARE = { name: 'Samuels Orthopedic Immediate Care Center', addr: '301 E 17th St', hours: 'Open Sun to Thu 8 AM to 9 PM, Fri and Sat 8 AM to 10:30 PM', phone: '212-598-7600' };
 
 // Tappable address: Apple Maps on Apple devices, Google Maps elsewhere.
@@ -496,16 +480,6 @@ function mapLink(addr) {
   const href = /iPhone|iPad|Macintosh/.test(navigator.userAgent) ? 'https://maps.apple.com/?q=' + q : 'https://www.google.com/maps/search/?api=1&query=' + q;
   return `<a class="addr" href="${href}" target="_blank" rel="noopener">${addr}</a>`;
 }
-
-// kind: 'scope' (arthroscopy) or 'open'; unknown procedure shows both versions.
-const PROCEDURES = {
-  scope: { label: 'Elbow arthroscopy', kind: 'scope' },
-  dbr:   { label: 'Distal biceps repair', kind: 'open' },
-  ucl:   { label: 'UCL repair', kind: 'open' },
-  unt:   { label: 'Ulnar nerve transposition', kind: 'open' },
-  epi:   { label: 'Epicondylectomy', kind: 'open' },
-  open:  { label: 'Other open elbow surgery', kind: 'open' },
-};
 
 /* Simple line icons (24px grid) */
 const ICONS = {
@@ -559,9 +533,9 @@ const store = {
 };
 
 const qs = new URLSearchParams(location.search);
-let settings = store.get(KEY, { s: '', p: '', d: '', setup: false });
+let settings = store.get(KEY, { s: '', a: '', p: '', st: '', d: '', setup: false });
 let fromUrl = false;
-for (const k of ['s', 'p', 'd']) {
+for (const k of LINK_KEYS) {
   if (qs.has(k)) { settings[k] = qs.get(k); fromUrl = true; }
 }
 sanitize();
@@ -578,9 +552,8 @@ if (fromUrl) {
 }
 
 function sanitize() {
-  if (!SURGEONS[settings.s]) settings.s = '';
-  if (!PROCEDURES[settings.p]) settings.p = '';
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(settings.d || '') || isNaN(parseDate(settings.d))) settings.d = '';
+  settings = { ...settings, ...cleanDetails(settings) };
+  if (settings.d && isNaN(parseDate(settings.d))) settings.d = '';
 }
 
 /* ============================================================
@@ -757,7 +730,7 @@ function preSteps(c) {
       'Arrival times aren’t available before this call.',
     ]) },
     { id: 'surgery', off: 0, calM: 'DAY', calD: '0', rel: 'Surgery day', title: 'Surgery', surgery: true,
-      calTitle: `${c.proc ? c.proc.label : 'Elbow surgery'} with ${c.surgeon.name}`, body: ul([
+      calTitle: `${c.proc ? c.proc.label : (AREAS[settings.a] ? AREAS[settings.a].label : 'Elbow') + ' surgery'} with ${c.surgeon.name}`, body: ul([
       'Arrive at least 2 hours before surgery.',
       'Bring your photo ID and insurance card.',
       'An adult must take you home.',
@@ -1134,7 +1107,7 @@ function renderHeader(c) {
   const t = document.getElementById('sbT'), s = document.getElementById('sbS');
   if (!settings.p && !settings.s && !c.surgery) { t.textContent = 'Add your surgery details'; s.textContent = 'Surgeon, surgery and date'; }
   else {
-    t.textContent = settings.p ? PROCEDURES[settings.p].label : 'Elbow surgery';
+    t.textContent = settings.p ? PROCEDURES[settings.p].label : (AREAS[settings.a] ? AREAS[settings.a].label : 'Elbow') + ' surgery';
     s.textContent = [settings.s ? SURGEONS[settings.s].name : '', c.surgery ? fmtLong(c.surgery) : 'No date yet'].filter(Boolean).join(' · ');
   }
   document.documentElement.style.setProperty('--top-h', document.querySelector('.topbar').offsetHeight + 'px');
@@ -1194,31 +1167,35 @@ document.getElementById('content').addEventListener('click', e => {
 
 /* Setup sheet */
 const dlg = document.getElementById('setup');
-const fS = document.getElementById('fSurgeon'), fP = document.getElementById('fProc'), fD = document.getElementById('fDate');
-fS.innerHTML = '<option value="">Not sure</option>' + Object.entries(SURGEONS).map(([k, v]) => `<option value="${k}">${v.name}</option>`).join('');
-fP.innerHTML = '<option value="">Not sure</option>' + Object.entries(PROCEDURES).map(([k, v]) => `<option value="${k}">${v.label}</option>`).join('');
-
-function shareLink() {
-  const p = new URLSearchParams();
-  if (fS.value) p.set('s', fS.value);
-  if (fP.value) p.set('p', fP.value);
-  if (fD.value) p.set('d', fD.value);
-  document.getElementById('shareUrl').value = location.origin + location.pathname + (p.toString() ? '?' + p : '');
+const fS = document.getElementById('fSurgeon'), fA = document.getElementById('fArea'), fP = document.getElementById('fProc'), fSt = document.getElementById('fStudy'), fD = document.getElementById('fDate');
+const opts = (list, none = 'Not sure') => `<option value="">${none}</option>` + list.map(([k, v]) => `<option value="${k}">${v.label || v.name}</option>`).join('');
+fS.innerHTML = opts(Object.entries(SURGEONS));
+fA.innerHTML = opts(Object.entries(AREAS));
+// Surgery and study lists follow the body area.
+function fillAreaLists() {
+  const p = fP.value, st = fSt.value;
+  fP.innerHTML = opts(procsFor(fA.value));
+  fP.value = procsFor(fA.value).some(([k]) => k === p) ? p : '';
+  const studies = studiesFor(fA.value);
+  fSt.innerHTML = opts(studies, studies.length ? 'None' : 'None available');
+  fSt.value = studies.some(([k]) => k === st) ? st : '';
+  fSt.disabled = !studies.length;
 }
-[fS, fP, fD].forEach(x => x.addEventListener('input', shareLink));
+fA.addEventListener('input', fillAreaLists);
+fP.addEventListener('input', () => { if (fP.value && !fA.value) { fA.value = PROCEDURES[fP.value].area; fillAreaLists(); } });
 
 function openSetup() {
-  fS.value = settings.s; fP.value = settings.p; fD.value = settings.d;
+  fS.value = settings.s; fA.value = settings.a; fillAreaLists();
+  fP.value = settings.p; fSt.value = settings.st; fD.value = settings.d;
   document.getElementById('sheetTitle').textContent = settings.setup ? 'Your Surgery' : 'Welcome';
   document.getElementById('cancelBtn').textContent = settings.setup ? 'Cancel' : 'Skip';
-  shareLink();
   dlg.showModal();
 }
 window.openSetup = openSetup;
 
 dlg.addEventListener('close', () => {
   if (dlg.returnValue === 'save') {
-    settings = { s: fS.value, p: fP.value, d: fD.value, setup: true };
+    settings = { s: fS.value, a: fA.value, p: fP.value, st: fSt.value, d: fD.value, setup: true };
     sanitize();
     viewPhase = null;
   } else {
@@ -1293,7 +1270,7 @@ function showBanner(on) {
 // Link that carries the surgery details, so they come along into Safari / the saved app.
 function carryUrl() {
   const p = new URLSearchParams();
-  for (const k of ['s', 'p', 'd']) if (settings[k]) p.set(k, settings[k]);
+  for (const k of LINK_KEYS) if (settings[k]) p.set(k, settings[k]);
   return location.origin + location.pathname + (p.toString() ? '?' + p : '');
 }
 // In iPhone Safari, keep the details in the address bar: "Add to Home Screen" saves this address.

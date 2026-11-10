@@ -7,3 +7,14 @@
   [headers.values]
     X-Robots-Tag = "noindex"
     Referrer-Policy = "no-referrer"
+
+# Short addresses for the clinic staff Link Generator.
+[[redirects]]
+  from = "/QR"
+  to = "/link/"
+  status = 301
+
+[[redirects]]
+  from = "/qr"
+  to = "/link/"
+  status = 301

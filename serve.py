@@ -23,6 +23,8 @@ class H(http.server.SimpleHTTPRequestHandler):
         self.end_headers()
         if body: self.wfile.write(data)
     def do_GET(self):
+        if urlparse(self.path).path.lower() == '/qr':  # mirrors the Netlify redirect
+            self.send_response(301); self.send_header('Location', '/link/'); self.end_headers(); return
         if urlparse(self.path).path == '/api/ics': return self._ics(True)
         super().do_GET()
     def do_HEAD(self):
