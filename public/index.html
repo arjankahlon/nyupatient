@@ -733,11 +733,10 @@ function preSteps(c) {
     ]) },
     { id: 'nsaid', off: -5, calM: 'DAYS', calD: '5', rel: '5 days before', title: 'Stop pain relievers, aspirin and supplements', body: ul([
       'Stop Advil, Motrin, ibuprofen, Aleve and naproxen.',
-      'Stop aspirin.',
+      'Stop aspirin and blood thinners, <strong>unless your primary care doctor or cardiologist tells you otherwise</strong>. Follow their plan and let us know.',
       'Stop herbal supplements and other vitamins.',
       'Keep taking vitamins D and C, and XR or Klean Athlete if you use them.',
       'Tylenol is OK until the day before surgery.',
-      'On a blood thinner? Follow your doctor’s plan and tell us.',
     ]) },
     { id: 'pa', appt: true, approx: !appt('pa'), at: c.surgery ? (appt('pa') || priorTueFri(c.surgery)) : null, off: -3, calM: 'DAYS', calD: '3-4', rel: 'The Tuesday or Friday before', title: 'Video visit with our PA', body: ul([
       'On MyChart, usually the Tuesday or Friday morning before surgery.',
@@ -1049,8 +1048,7 @@ function renderPost(c) {
         'Fever over 101°F or chills',
         'Bleeding or fluid soaking the bandage',
         'Pain that keeps getting worse',
-        'A hand that is cold or blue',
-        'Numbness or tingling that lasts after the nerve block wears off (1 to 3 days)',
+        'An arm or hand that is cold, blue, tingly or numb',
       ])}
       ${more(ul([
         'More swelling or redness',
