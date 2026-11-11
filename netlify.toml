@@ -8,13 +8,18 @@
     X-Robots-Tag = "noindex"
     Referrer-Policy = "no-referrer"
 
-# Short addresses for the clinic staff Link Generator.
+# The clinic staff QR Code Generator lives at /QR. Lowercase and the old /link address lead there too.
 [[redirects]]
-  from = "/QR"
-  to = "/link/"
+  from = "/qr"
+  to = "/QR/"
   status = 301
 
 [[redirects]]
-  from = "/qr"
-  to = "/link/"
+  from = "/link"
+  to = "/QR/"
+  status = 301
+
+[[redirects]]
+  from = "/link/*"
+  to = "/QR/"
   status = 301

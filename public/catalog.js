@@ -1,6 +1,6 @@
 /* ============================================================
    CATALOG: surgeons, body areas, surgeries and studies.
-   Shared by the patient guide (/) and the Link Generator (/link).
+   Shared by the patient guide (/) and the QR Code Generator (/QR).
    Link/QR params: ?s=<surgeon>&a=<area>&p=<surgery>&st=<study>&d=YYYY-MM-DD
    ============================================================ */
 
