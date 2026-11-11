@@ -294,65 +294,35 @@
   .in-head img { width: 52px; height: 52px; border-radius: 12px; flex: none; }
   .in-head h2 { margin: 0; font-size: 22px; line-height: 1.15; letter-spacing: -.02em; }
   .in-head p { margin: 2px 0 0; font-size: 14px; color: var(--label-2); line-height: 1.3; }
-  .in-grid { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 10px; }
-  .in-step { background: var(--card); border-radius: var(--radius); padding: 10px; display: flex; flex-direction: column; min-height: 0; overflow: hidden; }
-  .in-n { font-size: 11px; font-weight: 700; letter-spacing: .08em; color: var(--accent); }
-  .in-t { font-size: 15px; font-weight: 600; line-height: 1.2; margin: 1px 0 0; }
-  .in-s { font-size: 12px; color: var(--label-2); line-height: 1.25; margin-top: 2px; }
-  .in-mock { flex: 1; min-height: 0; margin-top: 8px; background: var(--bg); border-radius: 10px; padding: 8px; display: flex; flex-direction: column; justify-content: center; gap: 6px; font-size: 11px; color: var(--label); }
-  .ring { box-shadow: 0 0 0 2px var(--accent); border-radius: 8px; }
-  .m-bar { display: flex; align-items: center; gap: 6px; background: #fff; border-radius: 999px; padding: 4px 4px 4px 10px; box-shadow: 0 1px 3px rgba(0,0,0,.1); }
-  .m-bar .url { flex: 1; height: 8px; border-radius: 4px; background: var(--fill); }
-  .m-dots { width: 24px; height: 20px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; letter-spacing: 1px; font-size: 10px; }
-  .m-menu { align-self: flex-end; background: #fff; border-radius: 8px; padding: 4px 8px; display: flex; align-items: center; gap: 6px; font-weight: 600; }
-  .m-menu svg, .m-row svg { width: 12px; height: 12px; color: var(--blue); }
-  .t-ic { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 4px; border-radius: 6px; background: var(--fill); font-size: 13px; font-weight: 700; vertical-align: -3px; letter-spacing: 1px; }
-  .t-ic.share { color: var(--blue); padding: 0 2px; }
-  .t-ic svg { width: 16px; height: 16px; }
-  .in-mock.big { gap: 7px; font-size: 14px; }
-  .in-mock.big .m-bar { padding: 6px 6px 6px 12px; }
-  .in-mock.big .m-dots { width: 34px; height: 26px; font-size: 13px; }
-  .in-mock.big .m-bar .m-dots:first-child { margin-left: -6px; }
-  .in-mock.big .m-menu { padding: 6px 10px; font-size: 15px; gap: 8px; }
-  .in-mock.big .m-menu svg { width: 20px; height: 20px; }
-  .m-or { text-align: center; font-size: 11px; color: var(--label-2); line-height: 1; }
-  .m-apps { display: flex; gap: 5px; justify-content: space-between; }
-  .m-apps span { flex: 1; aspect-ratio: 1; max-width: 22px; border-radius: 6px; background: #fff; box-shadow: 0 0 0 .5px var(--sep); }
-  .m-tiles i { display: block; margin: 0 auto 3px; }
-  .m-tiles .sq { width: 10px; height: 10px; border: 1.5px solid var(--label-3); border-radius: 2px; }
-  .m-tiles .chev-d { width: 7px; height: 7px; border-right: 2px solid var(--label); border-bottom: 2px solid var(--label); transform: rotate(45deg); margin-top: 1px; margin-bottom: 5px; }
-  .m-icons { display: flex; gap: 5px; justify-content: space-between; }
-  .m-icons span { flex: 1; aspect-ratio: 1; max-width: 22px; border-radius: 50%; background: #d8d8de; }
-  .m-tiles { display: flex; gap: 5px; }
-  .m-tiles span { flex: 1; background: #fff; border-radius: 6px; padding: 4px 2px; text-align: center; font-size: 9px; color: var(--label-2); }
-  .m-tiles .ring { color: var(--label); font-weight: 600; }
-  .m-list { background: #fff; border-radius: 8px; overflow: hidden; }
-  .m-row { display: flex; align-items: center; justify-content: space-between; padding: 5px 8px; border-top: .5px solid var(--sep); }
-  .m-row:first-child { border-top: 0; }
-  .m-row.ring { font-weight: 600; border-radius: 6px; }
-  .m-faint { color: var(--label-3); }
-  .m-top { display: flex; justify-content: space-between; align-items: center; font-size: 10px; color: var(--label-2); }
-  .m-add { color: var(--blue); font-weight: 700; padding: 1px 6px; }
-  .m-toggle { width: 26px; height: 15px; border-radius: 999px; background: var(--green); position: relative; flex: none; }
+  /* Compact steps that stay in the top half, so they remain visible above Safari's share menu. */
+  .in-steps { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; flex: none; }
+  .in-steps li { display: flex; align-items: center; gap: 10px; background: var(--card); border-radius: 12px; padding: 7px 10px; min-height: 42px; font-size: 16px; line-height: 1.2; }
+  .in-steps .num { flex: none; width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: #fff; font-size: 14px; font-weight: 700; display: grid; place-items: center; }
+  .in-steps .txt { flex: 1; min-width: 0; }
+  .in-steps .txt small { display: block; font-size: 12px; color: var(--label-2); margin-top: 1px; }
+  .in-steps .ui { flex: none; display: inline-flex; align-items: center; gap: 5px; height: 30px; padding: 0 10px; border-radius: 9px; background: var(--bg); box-shadow: 0 0 0 2px var(--accent); font-size: 14px; font-weight: 600; color: var(--label); }
+  .in-steps .ui svg { width: 18px; height: 18px; color: var(--blue); }
+  .in-steps .ui { white-space: nowrap; }
+  .in-steps .ui.vm { display: inline-grid; justify-items: center; gap: 3px; height: auto; padding: 6px 10px; font-size: 12px; }
+  .in-steps .ui.vm .chev { margin: 0; }
+  .m-toggle { display: inline-block; vertical-align: -3px; margin-left: 3px; width: 26px; height: 15px; border-radius: 999px; background: var(--green); position: relative; }
   .m-toggle::after { content: ""; position: absolute; right: 2px; top: 2px; width: 11px; height: 11px; border-radius: 50%; background: #fff; }
-  .in-done { display: flex; align-items: center; gap: 12px; background: var(--card); border-radius: var(--radius); padding: 10px 12px; margin-top: 10px; }
-  .in-done img { width: 40px; height: 40px; border-radius: 9px; flex: none; }
-  .in-done .in-t { margin: 0; }
+  .big-ic { display: inline-block; font-size: 18px; line-height: 12px; vertical-align: -2px; color: var(--label); letter-spacing: 1px; }
+  .in-steps .ui.add { color: var(--blue); font-size: 16px; font-weight: 700; }
+  .in-steps .ui .chev { width: 8px; height: 8px; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); margin: -4px 2px 0; }
+  .t-ic { display: inline-grid; place-items: center; min-width: 22px; height: 22px; padding: 0 4px; border-radius: 6px; background: var(--fill); font-size: 13px; font-weight: 700; vertical-align: -3px; letter-spacing: 1px; }
+  .in-rest { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; color: var(--label-2); font-size: 14px; line-height: 1.35; padding: 12px 24px; }
+  .in-foot { flex: none; display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; }
+  .in-foot .btn { flex: 1; }
   .install .btn.block { width: 100%; margin-top: 10px; flex: none; }
   .in-safari { flex: 1; display: flex; flex-direction: column; justify-content: center; gap: 12px; }
   .in-safari .card { background: var(--card); border-radius: var(--radius); padding: 14px 16px; font-size: 16px; }
   .in-safari ol { margin: 6px 0 0; padding-left: 22px; }
   .in-safari li { margin: 4px 0; }
-  @media (max-height: 720px) {
-    .in-mock.big { gap: 4px; padding: 6px; }
-    .in-mock.big .m-bar { padding: 3px 4px 3px 10px; }
-    .in-mock.big .m-dots { height: 22px; }
-    .in-mock.big .m-menu { padding: 3px 8px; font-size: 14px; }
-    .in-mock.big .m-menu svg { width: 17px; height: 17px; }
-    .in-head { padding-bottom: 8px; }
-    .in-grid { gap: 8px; }
+  @media (max-height: 640px) {
+    .install .in-head { padding-bottom: 8px; } .install .in-head img { width: 40px; height: 40px; } .install .in-head h2 { font-size: 19px; }
+    .in-steps { gap: 5px; } .in-steps li { min-height: 38px; padding: 5px 10px; font-size: 15px; } .in-steps .txt small { display: none; }
   }
-  @media (max-height: 620px) { .in-s { display: none; } .in-head img { width: 40px; height: 40px; } .in-head h2 { font-size: 19px; } }
   @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
   /* Netlify adds a "Powered by Netlify" badge to every page on the free plan; keep it hidden */
   #nl-badge-frame { display: none !important; }
@@ -434,19 +404,18 @@
 
 <section class="install" id="installSafari" hidden role="dialog" aria-modal="true" aria-labelledby="inTitle">
   <button class="x" type="button" data-install-close aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
-  <div class="in-head"><img src="apple-touch-icon.png" alt=""><div><h2 id="inTitle">Save this site as an App</h2><p>No download required. Can be deleted anytime.</p></div></div>
-  <div class="in-grid">
-    <div class="in-step"><div class="in-n">STEP 1</div><div class="in-t">Tap <span class="t-ic">•••</span> or <span class="t-ic">☰</span> then <span class="t-ic share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg></span> Share</div>
-      <div class="in-mock big"><div class="m-bar"><span class="url"></span><span class="m-dots ring">•••</span></div><div class="m-or">or</div><div class="m-bar"><span class="m-dots ring">☰</span><span class="url"></span></div><div class="m-menu ring">Share <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg></div></div></div>
-    <div class="in-step"><div class="in-n">STEP 2</div><div class="in-t">Tap View More</div>
-      <div class="in-mock"><div class="m-icons"><span></span><span></span><span></span><span></span><span></span></div><div class="m-apps"><span></span><span></span><span></span><span></span><span></span></div><div class="m-tiles"><span><i class="sq"></i>Copy</span><span><i class="sq"></i>Bookmark</span><span class="ring"><i class="chev-d"></i>View More</span></div></div></div>
-    <div class="in-step"><div class="in-n">STEP 3</div><div class="in-t">Tap Add to Home Screen</div><div class="in-s">You may need to scroll down.</div>
-      <div class="in-mock"><div class="m-list"><div class="m-row m-faint">Add to Favorites</div><div class="m-row ring">Add to Home Screen <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg></div><div class="m-row m-faint">Print</div></div></div></div>
-    <div class="in-step"><div class="in-n">STEP 4</div><div class="in-t">Turn on Open as Web App, then tap Add</div>
-      <div class="in-mock"><div class="m-top"><span>Cancel</span><span class="m-add ring">Add</span></div><div class="m-list"><div class="m-row ring">Open as Web App <span class="m-toggle"></span></div></div></div></div>
+  <div class="in-head"><img src="apple-touch-icon.png" alt=""><div><h2 id="inTitle">Save this site as an App</h2><p>No sign-ins or downloads required</p></div></div>
+  <ol class="in-steps">
+    <li><span class="num">1</span><span class="txt">Tap Share<small>You may have to tap <b class="big-ic">•••</b> or <b class="big-ic">☰</b> first</small></span><span class="ui"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M8 7l4-4 4 4"/><path d="M6 11H5a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-8a1 1 0 0 0-1-1h-1"/></svg></span></li>
+    <li><span class="num">2</span><span class="txt">Tap View More<small>Bottom right corner</small></span><span class="ui vm"><i class="chev"></i><span>View More</span></span></li>
+    <li><span class="num">3</span><span class="txt">Find<small>You may have to scroll down</small></span><span class="ui"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="M12 8v8M8 12h8"/></svg> Add to Home Screen</span></li>
+    <li><span class="num">4</span><span class="txt">Tap Add<small>Leave “Open as Web App” on <span class="m-toggle"></span></small></span><span class="ui add">Add</span></li>
+  </ol>
+  <div class="in-rest"></div>
+  <div class="in-foot">
+    <button class="btn plain" type="button" data-install-close>Done</button>
+
   </div>
-  <div class="in-done"><img src="apple-touch-icon.png" alt=""><div><div class="in-t">Find Surgery Guide on your Home Screen</div><div class="in-s">Open it from there from now on.</div></div></div>
-  <button class="btn block" type="button" data-install-close>Done</button>
 </section>
 
 <section class="install" id="installOther" hidden role="dialog" aria-modal="true" aria-labelledby="inTitle2">
@@ -1220,7 +1189,7 @@ dlg.addEventListener('close', () => {
 dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close('cancel'); });
 document.getElementById('detailsBtn').addEventListener('click', openSetup);
 
-/* Full packet: shown as an in-app page (#packet) so the iPhone home-screen app keeps a Back button. */
+/* Full packet: shown as an in-app page (#packet) on computers and Android; iPhones use Safari's PDF viewer instead. */
 const packetView = document.getElementById('packetView');
 let packetOpenedHere = false;
 function syncPacket() {
@@ -1236,6 +1205,12 @@ function syncPacket() {
 window.addEventListener('hashchange', syncPacket);
 document.getElementById('contacts').addEventListener('click', e => {
   if (!e.target.closest('[data-packet]')) return;
+  // iPhone/iPad: an embedded PDF only shows page 1, so open it in Safari's own PDF viewer
+  // (from the home-screen app this slides up as an in-app Safari sheet with a Done button).
+  if (/iPhone|iPad|iPod/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1)) {
+    window.open(new URL(context().surgeon.packet, location.href).href, '_blank');
+    return;
+  }
   packetOpenedHere = true;
   location.hash = 'packet';
 });
