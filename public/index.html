@@ -204,7 +204,8 @@
   .packet-back { justify-self: start; display: inline-flex; align-items: center; gap: 2px; border: 0; background: transparent; color: var(--accent); font-size: 17px; cursor: pointer; padding: 8px; }
   .packet-back svg { width: 22px; height: 22px; }
   .packet-title { font-weight: 600; }
-  .packet iframe { flex: 1; width: 100%; border: 0; background: #fff; }
+  .packet-pages { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; padding: 10px 10px calc(env(safe-area-inset-bottom) + 16px); display: flex; flex-direction: column; gap: 10px; }
+  .packet-pages img { display: block; width: 100%; max-width: 900px; height: auto; margin: 0 auto; background: #fff; border-radius: 4px; box-shadow: 0 1px 4px rgba(0,0,0,.12); }
   .step-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; align-items: flex-start; }
   .step-actions details.more { margin-top: 0; }
   .step-actions details.more[open] { flex-basis: 100%; }
@@ -398,7 +399,7 @@
     <div class="packet-title">Surgery Packet</div>
     <span></span>
   </div>
-  <iframe id="packetFrame" title="Full surgery packet"></iframe>
+  <div class="packet-pages" id="packetPages"></div>
 </section>
 
 
@@ -1189,15 +1190,20 @@ dlg.addEventListener('close', () => {
 dlg.addEventListener('click', e => { if (e.target === dlg) dlg.close('cancel'); });
 document.getElementById('detailsBtn').addEventListener('click', openSetup);
 
-/* Full packet: shown as an in-app page (#packet) on computers and Android; iPhones use Safari's PDF viewer instead. */
+/* Full packet: an in-app page (#packet) with a Back button, also in the iPhone home-screen app. */
 const packetView = document.getElementById('packetView');
 let packetOpenedHere = false;
 function syncPacket() {
   const show = location.hash === '#packet';
   if (show) {
-    const f = document.getElementById('packetFrame');
-    const src = context().surgeon.packet + '#view=FitH';
-    if (f.getAttribute('src') !== src) f.setAttribute('src', src);
+    // Each page is a pre-made image (made with pdf2jpg.swift), so every page scrolls inside the app, including on iPhone.
+    const sg = context().surgeon, base = sg.packet.replace(/\.pdf$/, '/');
+    const el = document.getElementById('packetPages');
+    if (el.dataset.src !== base) {
+      el.dataset.src = base;
+      el.innerHTML = Array.from({ length: sg.packetPages }, (_, i) => `<img src="${base}${i + 1}.jpg" alt="Packet page ${i + 1} of ${sg.packetPages}" ${i > 1 ? 'loading="lazy"' : ''}>`).join('');
+    }
+    el.scrollTop = 0;
   }
   packetView.hidden = !show;
   document.body.style.overflow = show ? 'hidden' : '';
@@ -1205,12 +1211,6 @@ function syncPacket() {
 window.addEventListener('hashchange', syncPacket);
 document.getElementById('contacts').addEventListener('click', e => {
   if (!e.target.closest('[data-packet]')) return;
-  // iPhone/iPad: an embedded PDF only shows page 1, so open it in Safari's own PDF viewer
-  // (from the home-screen app this slides up as an in-app Safari sheet with a Done button).
-  if (/iPhone|iPad|iPod/.test(navigator.userAgent) || (/Macintosh/.test(navigator.userAgent) && navigator.maxTouchPoints > 1)) {
-    window.open(new URL(context().surgeon.packet, location.href).href, '_blank');
-    return;
-  }
   packetOpenedHere = true;
   location.hash = 'packet';
 });

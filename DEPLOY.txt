@@ -9,7 +9,7 @@ What's in this folder
   serve.py                     local preview only (not used by Netlify)
 
 Netlify setup (same as the tracker)
-  Site: surgeryguide (https://surgeryguide.netlify.app, renamed from nyupatient on 2026-11-11), linked to github.com/arjankahlon/nyupatient, branch main.
+  Site: surgeryguide (https://surgeryguide.netlify.app), linked to github.com/arjankahlon/surgeryguide, branch main.
   Auto publishing is LOCKED: every push builds, but nothing goes live until you click
   Publish deploy on that build (Netlify > Deploys). Builds that aren't published don't
   use credits; each publish does.
